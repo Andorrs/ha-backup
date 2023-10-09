@@ -1,0 +1,728 @@
+- id: '1675427901490'
+  alias: Tänd lamporna på nedanvåningen vid solnedgång
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: -00:30
+  condition: []
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      area_id:
+      - hallen
+      - living_room
+      - kitchen
+  mode: single
+- id: '1675427976266'
+  alias: Tänd lamporna på ovanvåningen vid solnedgång
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: -00:28
+  condition: []
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      area_id:
+      - isaks_rum
+      - bedroom
+      - tv_rum
+  - type: turn_on
+    device_id: 4650455aa4639cc3788fe21f5d97cbf2
+    entity_id: light.ikea_of_sweden_tradfri_driver_10w_light
+    domain: light
+    brightness_pct: 60
+  mode: single
+- id: '1675459420871'
+  alias: Släck nedanvåning dag före jobbdag
+  description: '
+
+    '
+  trigger:
+  - platform: time
+    at: '23:30:00'
+  condition:
+  - condition: time
+    weekday:
+    - sun
+    - mon
+    - tue
+    - wed
+    - thu
+  - condition: state
+    entity_id: input_boolean.helgdag_nastkommande_dag
+    state: 'off'
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      area_id:
+      - hallen
+      - kitchen
+      - living_room
+  mode: single
+- id: '1675459502892'
+  alias: Släck nedanvåning dag före helg
+  description: ''
+  trigger:
+  - platform: time
+    at: '23:55:00'
+  condition:
+  - condition: time
+    weekday:
+    - sat
+    - fri
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      area_id:
+      - hallen
+      - kitchen
+      - living_room
+  mode: single
+- id: '1675725633087'
+  alias: Tänd i köket på jobbdag
+  description: ''
+  trigger:
+  - platform: time
+    at: 06:30:00
+  condition:
+  - condition: sun
+    before: sunrise
+  - condition: time
+    weekday:
+    - fri
+    - thu
+    - wed
+    - tue
+    - mon
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      area_id: kitchen
+  mode: single
+- id: '1675751680556'
+  alias: Släck i köket på morgonen
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:25:00
+  condition:
+  - condition: device
+    type: is_on
+    device_id: 3b8970ada7da46bde9a281dea5a4a56e
+    entity_id: switch.koksfonster
+    domain: switch
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      area_id: kitchen
+  mode: single
+- id: '1676745092205'
+  alias: Släcka alla lampor på kvällen
+  description: ''
+  trigger:
+  - platform: time
+    at: '23:30:00'
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.gonatt
+    metadata: {}
+  mode: single
+- id: '1678197834461'
+  alias: Sally lämnar Iconovo
+  description: ''
+  trigger:
+  - platform: zone
+    entity_id: device_tracker.sally_location_tracker
+    zone: zone.iconovo
+    event: leave
+  condition: []
+  action:
+  - device_id: 7fcb231c30891969d1f7a1ddb077004c
+    domain: mobile_app
+    type: notify
+    message: Sally lämnar Iconovo
+  mode: single
+- id: '1678383216906'
+  alias: Sally lämnar Blåvinge
+  description: ''
+  trigger:
+  - platform: zone
+    entity_id: device_tracker.sally_location_tracker
+    zone: zone.home
+    event: leave
+  condition: []
+  action:
+  - device_id: dcbe585a9488eb377233b3edf747c216
+    domain: mobile_app
+    type: notify
+    message: Sally lämnar Blåvinge
+  mode: single
+- id: '1678633722014'
+  alias: Värmefläkt på
+  description: Om elpriset är under 40 öre, sätt på värmefläkten i bion.
+  trigger:
+  - type: monetary
+    platform: device
+    device_id: 43778247a49dc12a33cc539dcadef8a3
+    entity_id: sensor.nordpool_kwh_se4_sek_3_10_0
+    domain: sensor
+    below: 0.4
+  condition:
+  - condition: device
+    type: is_off
+    device_id: 580c9e6c7fe90033d523981df0f16349
+    entity_id: switch.varmeflakt
+    domain: switch
+  action:
+  - type: turn_on
+    device_id: 580c9e6c7fe90033d523981df0f16349
+    entity_id: switch.varmeflakt
+    domain: switch
+  - device_id: dcbe585a9488eb377233b3edf747c216
+    domain: mobile_app
+    type: notify
+    message: Värmefläkt på
+  mode: single
+- id: '1678633820414'
+  alias: Värmefläkt av
+  description: Stäng av värmefläkten i bion om elpriset är över 40 öre.
+  trigger:
+  - type: monetary
+    platform: device
+    device_id: 43778247a49dc12a33cc539dcadef8a3
+    entity_id: sensor.nordpool_kwh_se4_sek_3_10_0
+    domain: sensor
+    above: 0.4
+  condition:
+  - condition: device
+    type: is_on
+    device_id: 580c9e6c7fe90033d523981df0f16349
+    entity_id: switch.varmeflakt
+    domain: switch
+  action:
+  - type: turn_off
+    device_id: 580c9e6c7fe90033d523981df0f16349
+    entity_id: switch.varmeflakt
+    domain: switch
+  - device_id: dcbe585a9488eb377233b3edf747c216
+    domain: mobile_app
+    type: notify
+    message: Värmefläkt av
+  mode: single
+- id: '1679586049465'
+  alias: Ringhals 4 igång
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.ringhals4_procent
+    above: 5
+  condition: []
+  action:
+  - device_id: dcbe585a9488eb377233b3edf747c216
+    domain: mobile_app
+    type: notify
+    message: Nu har R4 startat!
+  mode: single
+- id: '1679665932545'
+  alias: ZHA - IKEA TRADFRI - 5 Button Remote - Custom Actions
+  description: ''
+  use_blueprint:
+    path: niro1987/zha_ikea_tradfri_5button_remote_custom.yaml
+    input:
+      remote: 12f04b6e7c7de30a45fe4a78fa0f982d
+      power_short:
+      - type: toggle
+        device_id: 026baa57249f5ca7a1ca21b2887edba8
+        entity_id: switch.sovrumsfonster
+        domain: switch
+      - type: toggle
+        device_id: 4650455aa4639cc3788fe21f5d97cbf2
+        entity_id: light.ikea_of_sweden_tradfri_driver_10w_light
+        domain: light
+      dimup_short:
+      - type: toggle
+        device_id: e6c0732afac3735cbc19e44a7c8ae0de
+        entity_id: switch.isaks_fonster
+        domain: switch
+      dimdown_short:
+      - type: toggle
+        device_id: decbbc694be3dbaa5dd2bae995fd653b
+        entity_id: switch.shellyplug_s_083a8dc0c3e4
+        domain: switch
+      power_long: []
+- id: '1680595800407'
+  alias: Släck ovanvåning vid frånvaro
+  description: ''
+  trigger:
+  - platform: time
+    at: 00:15:00
+  condition:
+  - condition: not
+    conditions:
+    - condition: zone
+      entity_id: device_tracker.sally_location_tracker
+      zone: zone.home
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      area_id:
+      - isaks_rum
+      - bedroom
+      - tv_rum
+  mode: single
+- id: '1680605346366'
+  alias: Kolla om nästa dag är helgdag
+  description: ''
+  trigger:
+  - platform: time
+    at: input_datetime.annandag_jul
+  - platform: time
+    at: input_datetime.annandag_pask
+  - platform: time
+    at: input_datetime.forsta_maj
+  - platform: time
+    at: input_datetime.julafton
+  - platform: time
+    at: input_datetime.juldagen
+  - platform: time
+    at: input_datetime.kristi_himmelsfardsdag
+  - platform: time
+    at: input_datetime.langfredag
+  - platform: time
+    at: input_datetime.midsommarafton
+  - platform: time
+    at: input_datetime.nationaldagen
+  - platform: time
+    at: input_datetime.new_years_eve
+  - platform: time
+    at: input_datetime.new_years_day
+  - platform: time
+    at: input_datetime.trettondagen
+  condition: []
+  action:
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.helgdag_nastkommande_dag
+  - service: automation.turn_on
+    data: {}
+    target:
+      entity_id: automation.reset_helgdag_nastkommande_dag
+  mode: single
+- id: '1680611990233'
+  alias: Släck nedanvåning vardag före helgdag
+  description: '
+
+    '
+  trigger:
+  - platform: time
+    at: '23:55:00'
+  condition:
+  - condition: time
+    weekday:
+    - sun
+    - mon
+    - tue
+    - wed
+    - thu
+  - condition: state
+    entity_id: input_boolean.helgdag_nastkommande_dag
+    state: 'on'
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      area_id:
+      - hallen
+      - kitchen
+      - living_room
+  mode: single
+- id: '1680612329882'
+  alias: Reset Helgdag nästkommande dag
+  description: ''
+  trigger:
+  - platform: time
+    at: '23:59:00'
+  condition: []
+  action:
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.helgdag_nastkommande_dag
+  - service: automation.turn_off
+    data:
+      stop_actions: false
+    target:
+      entity_id: automation.reset_helgdag_nastkommande_dag
+  mode: single
+- id: '1681394557300'
+  alias: iGrill Probe 1 temperatur uppnådd
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.target_alert_temp_probe_1
+    to: Alert
+  condition: []
+  action:
+  - device_id: 7fcb231c30891969d1f7a1ddb077004c
+    domain: mobile_app
+    type: notify
+    message: iGrill givare 1 har nått måltemperaturen
+  - service: tts.google_translate_say
+    data:
+      cache: false
+      entity_id: media_player.family_room_speaker
+      message: Temperaturen är uppnådd för givare 1
+  mode: single
+- id: '1681394639907'
+  alias: iGrill Probe 2 temperatur uppnådd
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.target_alert_temp_probe_2
+    to: Alert
+  condition: []
+  action:
+  - device_id: 7fcb231c30891969d1f7a1ddb077004c
+    domain: mobile_app
+    type: notify
+    message: iGrill givare 2 har nått måltemperaturen
+  - service: tts.google_translate_say
+    data:
+      cache: false
+      entity_id: media_player.family_room_speaker
+      message: Temperaturen är uppnådd för givare 2
+  mode: single
+- id: '1681394817467'
+  alias: iGrill Probe 1 nästan klar
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.almost_target_alert_temp_probe_1
+    to: Alert
+  condition: []
+  action:
+  - device_id: 7fcb231c30891969d1f7a1ddb077004c
+    domain: mobile_app
+    type: notify
+    message: Probe 1 är nära måltemperaturen
+  - service: tts.google_translate_say
+    data:
+      cache: false
+      entity_id: media_player.family_room_speaker
+      message: Temperaturen är snart uppnådd för givare 1
+  mode: single
+- id: '1681394876997'
+  alias: iGrill Probe 2 nästan klar
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.almost_target_alert_temp_probe_2
+    to: Alert
+  condition: []
+  action:
+  - device_id: 7fcb231c30891969d1f7a1ddb077004c
+    domain: mobile_app
+    type: notify
+    message: Probe 2 är nära måltemperaturen
+  - service: tts.google_translate_say
+    data:
+      cache: false
+      entity_id: media_player.family_room_speaker
+      message: Temperaturen är snart uppnådd för givare 2
+  mode: single
+- id: '1681727346223'
+  alias: iGrill Probe 1 Food Selection
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.igrill_probe_1_matvara
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: input_select.igrill_probe_1_matvara
+        state: Lax
+      sequence:
+      - service: script.probe_1_set_temp
+        data:
+          value: '54'
+    - conditions:
+      - condition: state
+        entity_id: input_select.igrill_probe_1_matvara
+        state: Fläskfilé
+      sequence:
+      - service: script.probe_1_set_temp
+        data:
+          value: '68'
+    - conditions:
+      - condition: state
+        entity_id: input_select.igrill_probe_1_matvara
+        state: Revben
+      sequence:
+      - service: script.probe_1_set_temp
+        data:
+          value: '88'
+    - conditions:
+      - condition: state
+        entity_id: input_select.igrill_probe_1_matvara
+        state: Kyckling
+      sequence:
+      - service: script.probe_1_set_temp
+        data:
+          value: '70'
+    default:
+    - service: script.probe_1_set_temp
+      data:
+        value: '35'
+  mode: single
+- id: '1681730183143'
+  alias: iGrill Probe 2 Food Selection
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.igrill_probe_2_matvara
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: input_select.igrill_probe_2_matvara
+        state: Lax
+      sequence:
+      - service: script.probe_2_set_temp
+        data:
+          value: '54'
+    - conditions:
+      - condition: state
+        entity_id: input_select.igrill_probe_2_matvara
+        state: Fläskfilé
+      sequence:
+      - service: script.probe_2_set_temp
+        data:
+          value: '68'
+    - conditions:
+      - condition: state
+        entity_id: input_select.igrill_probe_2_matvara
+        state: Revben
+      sequence:
+      - service: script.probe_2_set_temp
+        data:
+          value: '88'
+    - conditions:
+      - condition: state
+        entity_id: input_select.igrill_probe_2_matvara
+        state: Kyckling
+      sequence:
+      - service: script.probe_2_set_temp
+        data:
+          value: '70'
+    default:
+    - service: script.probe_2_set_temp
+      data:
+        value: '35'
+  mode: single
+- id: '1681739859608'
+  alias: iGrill Probe 1 Trigger Calculating Remaining Time
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.igrill_70918f1acee4_probe_1
+  condition:
+  - condition: template
+    value_template: '{% set t_new = trigger.to_state.state | int(-99) %} {% set t_from
+      = trigger.from_state.state | int(-99) %} {{ t_from < t_new and (t_from > -99
+      and t_new > -99) }}
+
+      '
+  - condition: template
+    value_template: '{{ states(''sensor.igrill_70918f1acee4_probe_1'') < states(''input_number.igrill_probe_1_target'')
+      }}'
+  action:
+  - service: script.igrill_probe_1_predict_remaining_time
+    data:
+      last_temp: '{{ trigger.from_state.state }}'
+      temp_now: '{{ trigger.to_state.state }}'
+  mode: single
+- id: '1681825417241'
+  alias: iGrill Probe 1 Prediction Trigger Activation
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.igrill_probe_1_predict_remaining_time
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: input_boolean.igrill_probe_1_predict_remaining_time
+        state: 'on'
+      sequence:
+      - service: automation.turn_on
+        data: {}
+        target:
+          entity_id: automation.igrill_probe_1_trigger_calculating_remaining_time
+      - service: input_datetime.set_datetime
+        data:
+          time: 00:00:00
+        target:
+          entity_id:
+          - input_datetime.igrill_probe_1_estimated_time_remaining
+          - input_datetime.igrill_probe_1_estimated_ready_time
+      - service: input_datetime.set_datetime
+        data:
+          datetime: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }}'
+        target:
+          entity_id: input_datetime.igrill_probe_1_last_update
+    - conditions:
+      - condition: state
+        entity_id: input_boolean.igrill_probe_1_predict_remaining_time
+        state: 'off'
+      sequence:
+      - service: automation.turn_off
+        data:
+          stop_actions: true
+        target:
+          entity_id: automation.igrill_probe_1_trigger_calculating_remaining_time
+  mode: single
+- id: '1681883856797'
+  alias: iGrill Probe 1 Trigger Test
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.igrill_probe_1_predict_remaining_time
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - service: script.igrill_probe_1_predict_remaining_time_test
+    data:
+      last_temp: 48
+      temp_now: 49
+  mode: single
+- id: '1682509905221'
+  alias: Säg till Isak
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - alarm_control_panel.verisure_alarm
+    to: disarmed
+  condition: []
+  action:
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - service: tts.google_translate_say
+    data:
+      cache: false
+      entity_id: media_player.family_room_speaker
+      message: Kolla Messenger. Ha ha
+  - service: automation.turn_off
+    data:
+      stop_actions: true
+    target:
+      entity_id: automation.sag_till_isak
+  mode: single
+- id: '1682861248634'
+  alias: iGrill Probe 2 Trigger Calculating Remaining Time
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.igrill_70918f1acee4_probe_2
+  condition:
+  - condition: template
+    value_template: '{% set t_new = trigger.to_state.state | int(-99) %} {% set t_from
+      = trigger.from_state.state | int(-99) %} {{ t_from < t_new and (t_from > -99
+      and t_new > -99) }}
+
+      '
+  - condition: template
+    value_template: '{{ states(''sensor.igrill_70918f1acee4_probe_2'') < states(''input_number.igrill_probe_2_target'')
+      }}'
+  action:
+  - service: script.igrill_probe_2_predict_remaining_time
+    data:
+      last_temp: '{{ trigger.from_state.state }}'
+      temp_now: '{{ trigger.to_state.state }}'
+  mode: single
+- id: '1682861405451'
+  alias: iGrill Probe 2 Prediction Trigger Activation
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.igrill_probe_2_predict_remaining_time
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: input_boolean.igrill_probe_2_predict_remaining_time
+        state: 'on'
+      sequence:
+      - service: automation.turn_on
+        data: {}
+        target:
+          entity_id:
+          - automation.igrill_probe_2_predict_time
+      - service: input_datetime.set_datetime
+        data:
+          time: 00:00:00
+        target:
+          entity_id:
+          - input_datetime.igrill_probe_2_estimated_time_remaining
+          - input_datetime.igrill_probe_2_estimated_ready_time
+      - service: input_datetime.set_datetime
+        data:
+          datetime: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }}'
+        target:
+          entity_id: input_datetime.igrill_probe_2_last_update
+    - conditions:
+      - condition: state
+        entity_id: input_boolean.igrill_probe_2_predict_remaining_time
+        state: 'off'
+      sequence:
+      - service: automation.turn_off
+        data:
+          stop_actions: true
+        target:
+          entity_id:
+          - automation.igrill_probe_2_predict_time
+  mode: single
+- id: '1696594097797'
+  alias: Github backup
+  description: ''
+  trigger:
+  - platform: time
+    at: 02:00:00
+  condition: []
+  action:
+  - service: shell_command.pushupdates_to_github
+    data: {}
+  mode: single

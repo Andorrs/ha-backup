@@ -1,0 +1,184 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+# Text to speech
+tts:
+  - platform: google_translate
+    language: "sv"
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+sensor:
+  - platform: rest
+    resource: https://www.okg.se/.netlify/functions/getReactorOutput
+    name: OKG Effekt
+    scan_interval: 1800
+    value_template: "{{ value_json.output }}"
+    unit_of_measurement: MW
+  - platform: template
+    sensors:
+      okg_procent:
+        friendly_name: OKG Procent
+        value_template: "{{ (states('sensor.okg_effekt')|int) / 1450 * 100 }}"
+        unit_of_measurement: "%"
+      #time_until_jack:
+      #  friendly_name: När ska vi till Ästad?
+      #  value_template: >
+      #    {% set days_until_jack = (as_timestamp("2023-7-8 14:30:00") - as_timestamp(now())) | timestamp_custom("%j")| int %}
+      #    {% set hours_until_jack = (as_timestamp("2023-7-8 14:30:00") - as_timestamp(now())) | timestamp_custom("%H")| int %}
+      #    {% set minutes_until_jack = (as_timestamp("2023-7-8 14:30:00") - as_timestamp(now())) | timestamp_custom("%M")| int %}
+      #    Om {{ days_until_jack - 1 }} dagar, {{ hours_until_jack }} timmar, {{ minutes_until_jack }} minuter
+      wallconnector_power:
+        friendly_name: Wall Connector Power
+        unit_of_measurement: "W"
+        device_class: "power"
+        value_template: >
+          {% set a_current = states('sensor.tesla_wall_connector_phase_a_current') | float %}
+          {% set b_current = states('sensor.tesla_wall_connector_phase_b_current') | float %}
+          {% set c_current = states('sensor.tesla_wall_connector_phase_c_current') | float %}
+          {% set a_voltage = states('sensor.tesla_wall_connector_phase_a_voltage') | float %}
+          {% set b_voltage = states('sensor.tesla_wall_connector_phase_b_voltage') | float %}
+          {% set c_voltage = states('sensor.tesla_wall_connector_phase_c_voltage') | float %}
+          {{ (a_current * a_voltage) + (b_current * b_voltage) + (c_current * c_voltage) }}
+      totalt_elpris:
+        friendly_name: Totalt elpris
+        unit_of_measurement: "SEK/kWh"
+        icon_template: "mdi:currency-eur"
+        value_template: >
+          {% set days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] %}
+          {% set monthly_usage = [1867, 1371, 1865, 1474, 1214, 768, 1063, 955, 796, 1279, 1710, 1705] %}
+          {% set i = now().month - 1 %}
+          {% set spotpris = states('sensor.nordpool_kwh_se4_sek_2_10_0') | float %}
+          {% set elbolag_avgifter = 12.31 | float %}
+          {% set elnat_arsavgift = 6144 | int %}
+          {% set elnat_fast_avgift = (elnat_arsavgift / 365 * days_in_month[i] / monthly_usage[i]) | float %}
+          {% set elnat_overforing = 22.40 | float %}
+          {% set elnat_energiskatt = 39.20 | float %}
+          {{ ((spotpris + elbolag_avgifter + elnat_fast_avgift + elnat_overforing + elnat_energiskatt) * 1.25 / 100) | round(2) }}
+      wallconnector_power_cost:
+        friendly_name: "Wallconnector kostnad"
+        unit_of_measurement: "SEK"
+        icon_template: "mdi:currency-eur"
+        value_template: >
+          {% set power = states('sensor.wallconnector_power') | float %}
+          {% set cost = states('sensor.totalt_elpris') | float %}
+          {{ power * cost / 1000 }}
+
+########### iGRILL ALERT SENSORS ############
+template:
+  - sensor:
+      - name: "igrill_alert_temp"
+        state: >-
+          {% if (states.sensor.igrill_70918f1acee4_probe_4.state | int) < (states.input_number.igrill_alert_low.state | int) or (states.sensor.igrill_70918f1acee4_probe_4.state | int)  > (states.input_number.igrill_alert_high.state | int) %}
+            Alert
+          {% else %}
+            Normal
+          {% endif %}
+  - sensor:
+      - name: "target_alert_temp_probe_1"
+        state: >-
+          {% if (states.sensor.igrill_70918f1acee4_probe_1.state | int) >= (states.input_number.igrill_probe_1_target.state | int) %}
+            Alert
+          {% else %}
+            Normal
+          {% endif %}
+  - sensor:
+      - name: "target_alert_temp_probe_2"
+        state: >-
+          {% if (states.sensor.igrill_70918f1acee4_probe_2.state | int) >= (states.input_number.igrill_probe_2_target.state | int) %}
+            Alert
+          {% else %}
+            Normal
+          {% endif %}
+  - sensor:
+      - name: "target_alert_temp_probe_3"
+        state: >-
+          {% if (states.sensor.igrill_70918f1acee4_probe_3.state | int) >= (states.input_number.igrill_probe_3_target.state | int) %}
+            Alert
+          {% else %}
+            Normal
+          {% endif %}
+  - sensor:
+      - name: "target_alert_temp_probe_4"
+        state: >-
+          {% if (states.sensor.igrill_70918f1acee4_probe_4.state | int) >= (states.input_number.igrill_probe_4_target.state | int) %}
+            Alert
+          {% else %}
+            Normal
+          {% endif %}
+  - sensor:
+      - name: "almost_target_alert_temp_probe_1"
+        state: >-
+          {% if (states.sensor.igrill_70918f1acee4_probe_1.state | int) >= (((states.input_number.igrill_probe_1_target.state | int) - 5) | int) %}
+            Alert
+          {% else %}
+            Normal
+          {% endif %}
+  - sensor:
+      - name: "almost_target_alert_temp_probe_2"
+        state: >-
+          {% if (states.sensor.igrill_70918f1acee4_probe_2.state | int) >= (((states.input_number.igrill_probe_2_target.state | int) - 5) | int) %}
+            Alert
+          {% else %}
+            Normal
+          {% endif %}
+  - sensor:
+      - name: "almost_target_alert_temp_probe_3"
+        state: >-
+          {% if (states.sensor.igrill_70918f1acee4_probe_3.state | int) >= (((states.input_number.igrill_probe_3_target.state | int) - 5) | int) %}
+            Alert
+          {% else %}
+            Normal
+          {% endif %}
+  - sensor:
+      - name: "almost_target_alert_temp_probe_4"
+        state: >-
+          {% if (states.sensor.igrill_70918f1acee4_probe_4.state | int) >= (((states.input_number.igrill_probe_4_target.state | int) - 5) | int) %}
+            Alert
+          {% else %}
+            Normal
+          {% endif %}
+
+rest:
+  - resource: https://www.smhi.se/wpt-a/backend_observation/metobs/station/number/52350
+    scan_interval: 3600
+    sensor:
+      - name: "SMHI Observation Malmö Temp"
+        unit_of_measurement: "°C"
+        value_template: '{{ value_json["values"]["t"]["values"][24].value | float }}'
+      - name: "SMHI Observation Malmö Vind"
+        unit_of_measurement: "m/s"
+        value_template: '{{ value_json["values"]["ws"]["values"][24].value | float }}'
+      - name: "SMHI Observation Malmö Byvind"
+        unit_of_measurement: "mm"
+        value_template: '{{ value_json["values"]["gust"]["values"][24].value | float }}'
+      - name: "SMHI Observation Malmö Nederbörd"
+        unit_of_measurement: "mm"
+        value_template: '{{ value_json["values"]["p"]["values"][24].value | float }}'
+      - name: "SMHI Observation Malmö Luftfuktighet"
+        unit_of_measurement: "%"
+        value_template: '{{ value_json["values"]["r"]["values"][24].value | float }}'
+
+mqtt:
+  sensor:
+    state_topic: "homeassistant/sensor/igrill_70918f1acee4/status"
+    name: "ESP32 iGrill BLE Client"
+    json_attributes_topic: "homeassistant/sensor/igrill_70918f1acee4/systeminfo"
+
+logbook:
+  exclude:
+    entities: sensor.time_until_jack
+
+logger:
+  default: info
+  logs:
+    homeassistant.components.rest: debug
+
+shell_command:
+  pushupdates_to_github: /bin/bash pushupdates.sh

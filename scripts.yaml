@@ -1,0 +1,119 @@
+probe_1_set_temp:
+  alias: Probe 1 set temp
+  fields:
+    value:
+      description: Temperatur
+      example: "35"
+  sequence:
+    - service: input_number.set_value
+      data:
+        value: "{{ value }}"
+      target:
+        entity_id: input_number.igrill_probe_1_target
+  mode: single
+probe_2_set_temp:
+  alias: Probe 2 set temp
+  fields:
+    value:
+      description: Temperatur
+      example: "35"
+  sequence:
+    - service: input_number.set_value
+      data:
+        value: "{{ value }}"
+      target:
+        entity_id: input_number.igrill_probe_2_target
+  mode: single
+igrill_probe_1_predict_remaining_time:
+  alias: iGrill Probe 1 Predict Remaining Time
+  fields:
+    last_temp:
+      description: Temp vid förra triggern
+      example: "48"
+    temp_now:
+      description: Temp nu
+      example: "49"
+  variables:
+    last_update: "{{ as_timestamp(states('input_datetime.igrill_probe_1_last_update')) }}"
+    right_now: "{{ as_timestamp(now()) }}"
+    target_temp: "{{ states('input_number.igrill_probe_1_target') | int }}"
+    seconds_remaining: "{{ (target_temp - temp_now) * (right_now - last_update) / (temp_now - last_temp) }}"
+    ready_time: "{{ right_now + seconds_remaining }}"
+    midnight: "{{ now().replace(hour=0, minute=0, second=0, microsecond=0) }}"
+    time_remaining: "{{ as_timestamp(now().replace(hour=0, minute=0, second=0, microsecond=0)) + seconds_remaining }}"
+  sequence:
+    - service: input_datetime.set_datetime
+      entity_id: input_datetime.igrill_probe_1_estimated_time_remaining
+      data:
+        datetime: "{{ as_local(as_datetime(time_remaining)) }}"
+    - service: input_datetime.set_datetime
+      entity_id: input_datetime.igrill_probe_1_estimated_ready_time
+      data:
+        datetime: "{{ as_local(as_datetime(ready_time)) }}"
+    - service: input_datetime.set_datetime
+      entity_id: input_datetime.igrill_probe_1_last_update
+      data:
+        datetime: "{{ as_local(as_datetime(right_now)) }}"
+  mode: single
+igrill_probe_2_predict_remaining_time:
+  alias: iGrill Probe 2 Predict Remaining Time
+  fields:
+    last_temp:
+      description: Temp vid förra triggern
+      example: "48"
+    temp_now:
+      description: Temp nu
+      example: "49"
+  variables:
+    last_update: "{{ as_timestamp(states('input_datetime.igrill_probe_2_last_update')) }}"
+    right_now: "{{ as_timestamp(now()) }}"
+    target_temp: "{{ states('input_number.igrill_probe_2_target') | int }}"
+    seconds_remaining: "{{ (target_temp - temp_now) * (right_now - last_update) / (temp_now - last_temp) }}"
+    ready_time: "{{ right_now + seconds_remaining }}"
+    midnight: "{{ now().replace(hour=0, minute=0, second=0, microsecond=0) }}"
+    time_remaining: "{{ as_timestamp(now().replace(hour=0, minute=0, second=0, microsecond=0)) + seconds_remaining }}"
+  sequence:
+    - service: input_datetime.set_datetime
+      entity_id: input_datetime.igrill_probe_2_estimated_time_remaining
+      data:
+        datetime: "{{ as_local(as_datetime(time_remaining)) }}"
+    - service: input_datetime.set_datetime
+      entity_id: input_datetime.igrill_probe_2_estimated_ready_time
+      data:
+        datetime: "{{ as_local(as_datetime(ready_time)) }}"
+    - service: input_datetime.set_datetime
+      entity_id: input_datetime.igrill_probe_2_last_update
+      data:
+        datetime: "{{ as_local(as_datetime(right_now)) }}"
+  mode: single
+igrill_probe_1_predict_remaining_time_test:
+  alias: iGrill Probe 1 Predict Remaining Time Test
+  fields:
+    last_temp:
+      description: Temp vid förra triggern
+      example: "48"
+    temp_now:
+      description: Temp nu
+      example: "49"
+  variables:
+    last_update: "{{ as_timestamp(states('input_datetime.igrill_probe_1_last_update')) }}"
+    right_now: "{{ as_timestamp(now()) }}"
+    target_temp: "{{ states('input_number.igrill_probe_1_target') | int }}"
+    seconds_remaining: "{{ (target_temp - temp_now) * (right_now - last_update) / (temp_now - last_temp) }}"
+    #ready_time: "{{ right_now + seconds_remaining }}"
+    #midnight: "{{ now().replace(hour=0, minute=0, second=0, microsecond=0) }}"
+    #time_remaining: "{{ as_timestamp(now().replace(hour=0, minute=0, second=0, microsecond=0)) + seconds_remaining }}"
+  sequence:
+    - service: logbook.log
+      data:
+        name: "last_temp: "
+        message: "{{ last_temp }}"
+    - service: logbook.log
+      data:
+        name: "temp_now: "
+        message: "{{ temp_now }}"
+    - service: logbook.log
+      data:
+        name: "seconds_remaining: "
+        message: "{{ seconds_remaining }}"
+  mode: single

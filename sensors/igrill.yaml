@@ -1,0 +1,46 @@
+########### iGRILL ALERT SENSORS ############
+template:
+  - sensor:
+      - name: "grill_alert_temp"
+        state: >-
+          {% if (states.sensor.igrill_70918f1acee4_probe_4.state | int) < (states.input_number.igrill_alert_low.state | int) or (states.sensor.igrill_70918f1acee4_probe_4.state | int)  > (states.input_number.igrill_alert_high.state | int) %}
+            Alert
+          {% else %}
+            Normal
+          {% endif %}
+  - sensor:
+      - name: "target_alert_temp_probe_1"
+        state: >-
+          {% if (states.sensor.igrill_70918f1acee4_probe_1.state | int) >= (states.input_number.igrill_probe_1_target.state | int) %}
+            Alert
+          {% else %}
+            Normal
+          {% endif %}
+  - sensor:
+      - name: "target_alert_temp_probe_2"
+        state: >-
+          {% if (states.sensor.igrill_70918f1acee4_probe_2.state | int) >= (states.input_number.igrill_probe_2_target.state | int) %}
+            Alert
+          {% else %}
+            Normal
+          {% endif %}
+  - sensor:
+      - name: "target_alert_temp_probe_3"
+        state: >-
+          {% if (states.sensor.igrill_70918f1acee4_probe_3.state | int) >= (states.input_number.igrill_probe_3_target.state | int) %}
+            Alert
+          {% else %}
+            Normal
+  - sensor:
+      - name: "target_alert_temp_probe_4"
+        state: >-
+          {% if (states.sensor.igrill_70918f1acee4_probe_4.state | int) >= (states.input_number.igrill_probe_4_target.state | int) %}
+            Alert
+          {% else %}
+            Normal
+          {% endif %}
+mqtt:
+  sensor:
+    state_topic: "homeassistant/sensor/igrill_70918f1acee4/status"
+    name: "ESP32 iGrill BLE Client"
+    json_attributes_topic: "homeassistant/sensor/igrill_70918f1acee4/systeminfo"

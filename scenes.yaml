@@ -1,0 +1,52 @@
+- id: '1676030690584'
+  name: Släcka alla lampor
+  entities:
+    switch.shellyplug_s_083a8dc31b03:
+      friendly_name: Entré
+      state: 'off'
+    switch.isaks_fonster:
+      friendly_name: Isaks lampa
+      state: 'off'
+    switch.sovrumsfonster:
+      friendly_name: Sovrumsfönster
+      state: 'off'
+    switch.shellyplug_s_083a8dc276d5:
+      friendly_name: Soffa
+      state: 'off'
+    switch.shellyplug_s_083a8dc1890b:
+      friendly_name: String
+      state: 'off'
+    switch.koksfonster:
+      friendly_name: Köksfönster
+      state: 'off'
+    switch.shellyplug_s_083a8dc0c3e4:
+      friendly_name: TV-bänk
+      state: 'off'
+  icon: mdi:desk-lamp-off
+  metadata: {}
+- id: '1676645465876'
+  name: Tända alla lampor
+  entities:
+    switch.shellyplug_s_083a8dc31b03:
+      friendly_name: Entré
+      state: 'on'
+    switch.koksfonster:
+      friendly_name: Köksfönster
+      state: 'on'
+    switch.shellyplug_s_083a8dc1890b:
+      friendly_name: String
+      state: 'on'
+    switch.shellyplug_s_083a8dc276d5:
+      friendly_name: Soffa
+      state: 'on'
+    switch.shellyplug_s_083a8dc0c3e4:
+      friendly_name: TV-bänk
+      state: 'on'
+    switch.isaks_fonster:
+      friendly_name: Isaks lampa
+      state: 'on'
+    switch.sovrumsfonster:
+      friendly_name: Sovrumsfönster
+      state: 'on'
+  metadata: {}
+  icon: mdi:desk-lamp-on
