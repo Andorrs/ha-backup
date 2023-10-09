@@ -180,5 +180,6 @@ logger:
   logs:
     homeassistant.components.rest: debug
 
+####### To automate upload to Github ######
 shell_command:
   pushupdates_to_github: /bin/bash pushupdates.sh
