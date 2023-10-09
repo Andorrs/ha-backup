@@ -14,6 +14,7 @@ automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 
+# Added sensors
 sensor:
   - platform: rest
     resource: https://www.okg.se/.netlify/functions/getReactorOutput
