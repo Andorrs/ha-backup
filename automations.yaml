@@ -44,7 +44,7 @@
     '
   trigger:
   - platform: time
-    at: '23:30:00'
+    at: '23:45:00'
   condition:
   - condition: time
     weekday:
@@ -112,7 +112,7 @@
   description: ''
   trigger:
   - platform: time
-    at: 07:25:00
+    at: 07:40:00
   condition:
   - condition: device
     type: is_on
@@ -641,7 +641,7 @@
     data:
       cache: false
       entity_id: media_player.family_room_speaker
-      message: Kolla Messenger. Ha ha
+      message: Sätt på diskmaskinen är du snäll.
   - service: automation.turn_off
     data:
       stop_actions: true
