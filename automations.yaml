@@ -726,3 +726,19 @@
   - service: shell_command.pushupdates_to_github
     data: {}
   mode: single
+- id: '1698185967507'
+  alias: Stäng av värmefläkt när förstärkaren stängs av
+  description: ''
+  trigger:
+  - platform: device
+    device_id: 9ed824f820c7dac6350e3cc927d0966c
+    domain: media_player
+    entity_id: 1e8fbc4eff3217a81393f08e61869e8f
+    type: turned_off
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 580c9e6c7fe90033d523981df0f16349
+    entity_id: 9a1fa789a26a592ec4418c4069b4e527
+    domain: switch
+  mode: single
