@@ -281,6 +281,10 @@
       - isaks_rum
       - bedroom
       - tv_rum
+  - type: turn_off
+    device_id: 4650455aa4639cc3788fe21f5d97cbf2
+    entity_id: 14cb9daa73e9532259b01afacf40da37
+    domain: light
   mode: single
 - id: '1680605346366'
   alias: Kolla om nästa dag är helgdag
