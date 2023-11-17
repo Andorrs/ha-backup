@@ -746,3 +746,66 @@
     entity_id: 9a1fa789a26a592ec4418c4069b4e527
     domain: switch
   mode: single
+- id: '1700168392617'
+  alias: ZHA - IKEA Remote 4 button sovrum
+  description: ''
+  use_blueprint:
+    path: niro1987/zha_ikea_tradfri_5button_remote_custom.yaml
+    input:
+      remote: 12f04b6e7c7de30a45fe4a78fa0f982d
+      power_short:
+      - service: switch.toggle
+        data: {}
+        target:
+          device_id: 026baa57249f5ca7a1ca21b2887edba8
+- id: '1700168691016'
+  alias: ZHA - IKEA four button remote for lights
+  description: ''
+  use_blueprint:
+    path: Malte/zha-ikea-four-button-remote-styrbar-for-lights-e2001-e2002.yaml
+    input:
+      remote: 0b3f5ca917047e7d9c6e6e0afe0af2ef
+      light:
+        entity_id: light.ikea_of_sweden_tradfri_driver_10w_light
+      button_left_short:
+      - service: switch.toggle
+        data: {}
+        target:
+          device_id: e6c0732afac3735cbc19e44a7c8ae0de
+      button_right_short:
+      - service: switch.toggle
+        data: {}
+        target:
+          device_id: decbbc694be3dbaa5dd2bae995fd653b
+- id: '1700168959181'
+  alias: Tänd sovrumsfönster
+  description: Aktiveras när Ikea-lampan tänds.
+  trigger:
+  - platform: device
+    type: turned_on
+    device_id: 4650455aa4639cc3788fe21f5d97cbf2
+    entity_id: 14cb9daa73e9532259b01afacf40da37
+    domain: light
+  condition: []
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      device_id: 026baa57249f5ca7a1ca21b2887edba8
+  mode: single
+- id: '1700169026847'
+  alias: Släck sovrumsfönster
+  description: Aktiveras när Ikea-lampan släcks.
+  trigger:
+  - platform: device
+    type: turned_off
+    device_id: 4650455aa4639cc3788fe21f5d97cbf2
+    entity_id: 14cb9daa73e9532259b01afacf40da37
+    domain: light
+  condition: []
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      device_id: 026baa57249f5ca7a1ca21b2887edba8
+  mode: single
