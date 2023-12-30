@@ -645,8 +645,7 @@
     data:
       cache: false
       entity_id: media_player.family_room_speaker
-      message: Hej. VA Syd jobbar med vattenledningarna, så vattnet kan vara grumligt.
-        Undvik att dricka det.
+      message: Sätt på kaffe.
   - service: automation.turn_off
     data:
       stop_actions: true
