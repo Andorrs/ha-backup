@@ -50,3 +50,31 @@
       state: 'on'
   metadata: {}
   icon: mdi:desk-lamp-on
+- id: '1716149598913'
+  name: Rullgardiner upp
+  entities:
+    cover.ikea_of_sweden_fyrtur_block_out_roller_blind_cover:
+      current_position: 100
+      friendly_name: Rullgardin 1 Cover
+      supported_features: 15
+      state: open
+    cover.ikea_of_sweden_fyrtur_block_out_roller_blind_cover_2:
+      current_position: 100
+      friendly_name: Rullgardin 2 Cover
+      supported_features: 15
+      state: open
+  metadata: {}
+- id: '1716149875976'
+  name: Rullgardiner ner
+  entities:
+    cover.ikea_of_sweden_fyrtur_block_out_roller_blind_cover:
+      current_position: 53
+      friendly_name: Rullgardin 1 Cover
+      supported_features: 15
+      state: open
+    cover.ikea_of_sweden_fyrtur_block_out_roller_blind_cover_2:
+      current_position: 53
+      friendly_name: Rullgardin 2 Cover
+      supported_features: 15
+      state: open
+  metadata: {}
