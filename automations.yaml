@@ -4,6 +4,7 @@
   trigger:
   - platform: sun
     event: sunset
+    offset: -00:58
   condition: []
   action:
   - service: switch.turn_on
@@ -20,7 +21,7 @@
   trigger:
   - platform: sun
     event: sunset
-    offset: 00:02
+    offset: -00:56
   condition: []
   action:
   - service: switch.turn_on
