@@ -139,7 +139,7 @@
     metadata: {}
   mode: single
 - id: '1678197834461'
-  alias: Sally lämnar Iconovo
+  alias: Ellie lämnar Iconovo
   description: ''
   trigger:
   - platform: zone
@@ -148,77 +148,10 @@
     event: leave
   condition: []
   action:
-  - device_id: 7fcb231c30891969d1f7a1ddb077004c
+  - device_id: ef52a483bbf741a868fe93580a976531
     domain: mobile_app
     type: notify
-    message: Sally lämnar Iconovo
-  mode: single
-- id: '1678383216906'
-  alias: Sally lämnar Blåvinge
-  description: ''
-  trigger:
-  - platform: zone
-    entity_id: device_tracker.sally_location_tracker
-    zone: zone.home
-    event: leave
-  condition: []
-  action:
-  - device_id: dcbe585a9488eb377233b3edf747c216
-    domain: mobile_app
-    type: notify
-    message: Sally lämnar Blåvinge
-  mode: single
-- id: '1678633722014'
-  alias: Värmefläkt på
-  description: Om elpriset är under 40 öre, sätt på värmefläkten i bion.
-  trigger:
-  - type: monetary
-    platform: device
-    device_id: 43778247a49dc12a33cc539dcadef8a3
-    entity_id: sensor.nordpool_kwh_se4_sek_3_10_0
-    domain: sensor
-    below: 0.4
-  condition:
-  - condition: device
-    type: is_off
-    device_id: 580c9e6c7fe90033d523981df0f16349
-    entity_id: switch.varmeflakt
-    domain: switch
-  action:
-  - type: turn_on
-    device_id: 580c9e6c7fe90033d523981df0f16349
-    entity_id: switch.varmeflakt
-    domain: switch
-  - device_id: dcbe585a9488eb377233b3edf747c216
-    domain: mobile_app
-    type: notify
-    message: Värmefläkt på
-  mode: single
-- id: '1678633820414'
-  alias: Värmefläkt av
-  description: Stäng av värmefläkten i bion om elpriset är över 40 öre.
-  trigger:
-  - type: monetary
-    platform: device
-    device_id: 43778247a49dc12a33cc539dcadef8a3
-    entity_id: sensor.nordpool_kwh_se4_sek_3_10_0
-    domain: sensor
-    above: 0.4
-  condition:
-  - condition: device
-    type: is_on
-    device_id: 580c9e6c7fe90033d523981df0f16349
-    entity_id: switch.varmeflakt
-    domain: switch
-  action:
-  - type: turn_off
-    device_id: 580c9e6c7fe90033d523981df0f16349
-    entity_id: switch.varmeflakt
-    domain: switch
-  - device_id: dcbe585a9488eb377233b3edf747c216
-    domain: mobile_app
-    type: notify
-    message: Värmefläkt av
+    message: Ellie lämnar Iconovo
   mode: single
 - id: '1679586049465'
   alias: Ringhals 4 igång
