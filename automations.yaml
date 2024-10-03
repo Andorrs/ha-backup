@@ -143,7 +143,7 @@
   description: ''
   trigger:
   - platform: zone
-    entity_id: device_tracker.sally_location_tracker
+    entity_id: device_tracker.ellie_location_tracker
     zone: zone.iconovo
     event: leave
   condition: []
@@ -204,16 +204,16 @@
   - condition: not
     conditions:
     - condition: zone
-      entity_id: device_tracker.sally_location_tracker
+      entity_id: device_tracker.ellie_location_tracker
       zone: zone.home
   action:
-  - service: switch.turn_off
-    data: {}
+  - data: {}
     target:
       area_id:
       - isaks_rum
       - bedroom
       - tv_rum
+    action: switch.turn_off
   - type: turn_off
     device_id: 4650455aa4639cc3788fe21f5d97cbf2
     entity_id: 14cb9daa73e9532259b01afacf40da37
