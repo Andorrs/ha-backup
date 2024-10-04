@@ -779,3 +779,21 @@
     entity_id: 14cb9daa73e9532259b01afacf40da37
     domain: light
   mode: single
+- id: '1727985282363'
+  alias: Slå på elementet i bion under 5 grader
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.bio_sensor_temperature
+    below: 5
+  conditions:
+  - condition: numeric_state
+    entity_id: sensor.nordpool_kwh_se4_sek_2_10_0
+    below: 20
+  actions:
+  - type: turn_on
+    device_id: 580c9e6c7fe90033d523981df0f16349
+    entity_id: 9a1fa789a26a592ec4418c4069b4e527
+    domain: switch
+  mode: single
