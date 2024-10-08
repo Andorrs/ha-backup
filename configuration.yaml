@@ -17,6 +17,74 @@ scene: !include scenes.yaml
 # Added sensors
 sensor:
   - platform: rest
+    resource: https://karnkraft.vattenfall.se/ringhals/produktion/
+    method: GET
+    scan_interval: 1800
+    name: Ringhals Power
+    value_template: >
+      {{ value | regex_findall_index("blockProductionDataList.*production.:(\d+.\d+).*percent.:(\d+.\d+).*production.:(\d+.\d+).*percent.:(\d+.\d+)", ignorecase=true) }}
+  - platform: template
+    sensors:
+      ringhals3_effekt:
+        friendly_name: Ringhals 3 Effekt
+        unit_of_measurement: MW
+        value_template: >
+          {{ states('sensor.ringhals_power').split(',')[0] | regex_findall_index("(\d+)") }}
+      ringhals3_procent:
+        friendly_name: Ringhals 3 Procent
+        unit_of_measurement: "%"
+        value_template: >
+          {{ states('sensor.ringhals_power').split(',')[1] | regex_findall_index("(\d+.\d+)") }}
+      ringhals4_effekt:
+        friendly_name: Ringhals 4 Effekt
+        unit_of_measurement: MW
+        value_template: >
+          {{ states('sensor.ringhals_power').split(',')[2] | regex_findall_index("(\d+)") }}
+      ringhals4_procent:
+        friendly_name: Ringhals 4 Procent
+        unit_of_measurement: "%"
+        value_template: >
+          {{ states('sensor.ringhals_power').split(',')[3] | regex_findall_index("(\d+.\d+)") }}
+  - platform: rest
+    resource: https://karnkraft.vattenfall.se/forsmark/produktion/
+    method: GET
+    scan_interval: 1800
+    name: Forsmark Power
+    value_template: >
+      {{ value | regex_findall_index("blockProductionDataList.*production.:(\d+.\d+).*percent.:(\d+.\d+).*production.:(\d+.\d+).*percent.:(\d+.\d+).*production.:(\d+.\d+).*percent.:(\d+.\d+)", ignorecase=true) }}
+  - platform: template
+    sensors:
+      forsmark1_effekt:
+        friendly_name: Forsmark 1 Effekt
+        unit_of_measurement: MW
+        value_template: >
+          {{ states('sensor.forsmark_power').split(',')[0] | regex_findall_index("(\d+.\d)") | round(0) }}
+      forsmark1_procent:
+        friendly_name: Forsmark 1 Procent
+        unit_of_measurement: "%"
+        value_template: >
+          {{ states('sensor.forsmark_power').split(',')[1] | regex_findall_index("(\d+.\d+)") }}
+      forsmark2_effekt:
+        friendly_name: Forsmark 2 Effekt
+        unit_of_measurement: MW
+        value_template: >
+          {{ states('sensor.forsmark_power').split(',')[2] | regex_findall_index("(\d+.\d)") | round(0) }}
+      forsmark2_procent:
+        friendly_name: Forsmark 2 Procent
+        unit_of_measurement: "%"
+        value_template: >
+          {{ states('sensor.forsmark_power').split(',')[3] | regex_findall_index("(\d+.\d+)") }}
+      forsmark3_effekt:
+        friendly_name: Forsmark 3 Effekt
+        unit_of_measurement: MW
+        value_template: >
+          {{ states('sensor.forsmark_power').split(',')[4] | regex_findall_index("(\d+.\d)") | round(0) }}
+      forsmark3_procent:
+        friendly_name: Forsmark 3 Procent
+        unit_of_measurement: "%"
+        value_template: >
+          {{ states('sensor.forsmark_power').split(',')[5] | regex_findall_index("(\d+.\d+)") }}
+  - platform: rest
     resource: https://www.okg.se/.netlify/functions/getReactorOutput
     name: OKG Effekt
     scan_interval: 1800
@@ -70,6 +138,20 @@ sensor:
           {% set power = states('sensor.wallconnector_power') | float %}
           {% set cost = states('sensor.totalt_elpris') | float %}
           {{ power * cost / 1000 }}
+      ellie_energy_added_at_herrgarden:
+        friendly_name: "Ellie energy added at Herrgården"
+        unit_of_measurement: "kWh"
+        value_template: >
+          {% if is_state('device_tracker.ellie_location_tracker', 'Lilla Herrgården') %}
+          {{ sensor.ellie_energy_added }}
+          {% endif %}
+      ellie_energy_added_at_blavinge:
+        friendly_name: "Ellie energy added at Blåvinge"
+        unit_of_measurement: "kWh"
+        value_template: >
+          {% if is_state('device_tracker.ellie_location_tracker', 'Home') %}
+          {{ sensor.ellie_energy_added }}
+          {% endif %}
 
 ########### iGRILL ALERT SENSORS ############
 template:
