@@ -818,3 +818,20 @@
         entity_id: 9f5f17844ad0cf8b9e46445fa4da679a
         type: open
   mode: single
+- id: '1728375126132'
+  alias: Avisering när bil ansluts till laddaren
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.tesla_wall_connector_vehicle_connected
+    to: 'on'
+    from: 'off'
+  conditions: []
+  actions:
+  - action: notify.mobile_app_xq_de72
+    metadata: {}
+    data:
+      title: Bil ansluten till laddaren
+      message: Ändra ansluten bil vid behov
+  mode: single

@@ -138,19 +138,63 @@ sensor:
           {% set power = states('sensor.wallconnector_power') | float %}
           {% set cost = states('sensor.totalt_elpris') | float %}
           {{ power * cost / 1000 }}
+      wallconnector_power_alex_o_elin:
+        friendly_name: "Wallconnector power Alex o Elin"
+        unit_of_measurement: "W"
+        device_class: "power"
+        value_template: >
+          {% if is_state('input_select.car_connected_to_charger', 'Sälen') %}
+          {{ wallconnector_power }}
+          {% else %}
+          {{ 0.0 }}
+          {% endif %}
+      wallconnector_power_lennart_o_suzanne:
+        friendly_name: "Wallconnector power Lennart o Suzanne"
+        unit_of_measurement: "W"
+        device_class: "power"
+        value_template: >
+          {% if is_state('input_select.car_connected_to_charger', 'Lennart') %}
+          {{ wallconnector_power }}
+          {% else %}
+          {{ 0.0 }}
+          {% endif %}
+      wallconnector_power_cost_alex_o_elin:
+        friendly_name: "Wallconnector kostnad Alex o Elin"
+        unit_of_measurement: "SEK"
+        icon_template: "mdi:currency-eur"
+        value_template: >
+          {% set power = states('sensor.wallconnector_power') | float %}
+          {% set cost = states('sensor.totalt_elpris') | float %}
+          {% if is_state('input_select.car_connected_to_charger', 'Sälen') %}
+          {{ power * cost / 1000 }}
+          {% else %}
+          {{ 0.0 }}
+          {% endif %}
+      wallconnector_power_cost_lennart_o_suzanne:
+        friendly_name: "Wallconnector kostnad Lennart o Suzanne"
+        unit_of_measurement: "SEK"
+        icon_template: "mdi:currency-eur"
+        value_template: >
+          {% set power = states('sensor.wallconnector_power') | float %}
+          {% set cost = states('sensor.totalt_elpris') | float %}
+          {% if is_state('input_select.car_connected_to_charger', 'Lennart') %}
+          {{ power * cost / 1000 }}
+          {% else %}
+          {{ 0.0 }}
+          {% endif %}
       ellie_energy_added_at_herrgarden:
         friendly_name: "Ellie energy added at Herrgården"
         unit_of_measurement: "kWh"
         value_template: >
-          {% if is_state('device_tracker.ellie_location_tracker', 'Lilla Herrgården') %}
-          {{ sensor.ellie_energy_added }}
+          {% if is_state('device_tracker.ellie_location_tracker', 'lilla_herrgarden') %}
+          {{ states('sensor.ellie_energy_added') }}
           {% endif %}
       ellie_energy_added_at_blavinge:
         friendly_name: "Ellie energy added at Blåvinge"
         unit_of_measurement: "kWh"
         value_template: >
-          {% if is_state('device_tracker.ellie_location_tracker', 'Home') %}
-          {{ sensor.ellie_energy_added }}
+          {% if is_state('device_tracker.ellie_location_tracker', 'home') %}
+          {{ states('sensor.ellie_energy_added') }}
           {% endif %}
 
 ########### iGRILL ALERT SENSORS ############
