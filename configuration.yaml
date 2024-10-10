@@ -196,6 +196,22 @@ sensor:
           {% if is_state('device_tracker.ellie_location_tracker', 'home') %}
           {{ states('sensor.ellie_energy_added') }}
           {% endif %}
+      outdoor_latest_real_temperature:
+        friendly_name: "Senaste riktiga yttertemperaturen"
+        unit_of_measurement: "°C"
+        value_template: >
+          {% if states('sensor.tesla_wall_connector_handle_temperature') | float() < 40.0 %}
+          {{ states('sensor.tesla_wall_connector_handle_temperature') }}
+          {% endif %}
+      outdoor_temperature:
+        friendly_name: "Yttertemperatur"
+        unit_of_measurement: "°C"
+        value_template: >
+          {% if states('sensor.tesla_wall_connector_handle_temperature') | float() < 40.0 %}
+          {{ states('sensor.tesla_wall_connector_handle_temperature') }}
+          {% else %}
+          {{ states('sensor.outdoor_latest_temperature') }}
+          {% endif %}
 
 ########### iGRILL ALERT SENSORS ############
 template:
