@@ -786,7 +786,7 @@
   - trigger: numeric_state
     entity_id:
     - sensor.bio_sensor_temperature
-    below: 5
+    below: input_number.bio_lower_temp
   conditions:
   - condition: numeric_state
     entity_id: sensor.nordpool_kwh_se4_sek_2_10_0
@@ -834,4 +834,23 @@
     data:
       title: Bil ansluten till laddaren
       message: Ändra ansluten bil vid behov
+  mode: single
+- id: '1728632695681'
+  alias: Stäng av elementet i bion automatiskt
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.bio_sensor_temperature
+    above: input_number.bio_upper_temp
+  - trigger: numeric_state
+    entity_id:
+    - sensor.nordpool_kwh_se4_sek_2_10_0
+    above: input_number.grans_elpris_automatisk_varme_bio
+  conditions: []
+  actions:
+  - type: turn_off
+    device_id: 580c9e6c7fe90033d523981df0f16349
+    entity_id: 9a1fa789a26a592ec4418c4069b4e527
+    domain: switch
   mode: single
