@@ -125,9 +125,24 @@ sensor:
           {% set i = now().month - 1 %}
           {% set spotpris = states('sensor.nordpool_kwh_se4_sek_2_10_0') | float %}
           {% set elbolag_avgifter = 18.92 | float %}
-          {% set elnat_arsavgift = 6844 | int %}
+          {% set elnat_arsavgift = 684400 | int %}
           {% set elnat_fast_avgift = (elnat_arsavgift / 365 * days_in_month[i] / monthly_usage[i]) | float %}
           {% set elnat_overforing = 18.00 | float %}
+          {% set elnat_energiskatt = 42.80 | float %}
+          {{ ((spotpris + elbolag_avgifter + elnat_fast_avgift + elnat_overforing + elnat_energiskatt) * 1.25 / 100) | round(2) }}
+      totalt_elpris_se3:
+        friendly_name: Totalt elpris SE3
+        unit_of_measurement: "SEK/kWh"
+        icon_template: "mdi:currency-eur"
+        value_template: >
+          {% set days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] %}
+          {% set monthly_usage = [1867, 1371, 1865, 1474, 1214, 768, 1314, 955, 796, 1279, 1710, 1705] %}
+          {% set i = now().month - 1 %}
+          {% set spotpris = states('sensor.nordpool_kwh_se3_sek_2_10_0') | float %}
+          {% set elbolag_avgifter = 18.92 | float %}
+          {% set elnat_arsavgift = 491600 | int %}
+          {% set elnat_fast_avgift = (elnat_arsavgift / 365 * days_in_month[i] / monthly_usage[i]) | float %}
+          {% set elnat_overforing = 27.20 | float %}
           {% set elnat_energiskatt = 42.80 | float %}
           {{ ((spotpris + elbolag_avgifter + elnat_fast_avgift + elnat_overforing + elnat_energiskatt) * 1.25 / 100) | round(2) }}
       wallconnector_power_cost:
@@ -182,20 +197,62 @@ sensor:
           {% else %}
           {{ 0.0 }}
           {% endif %}
-      ellie_energy_added_at_herrgarden:
-        friendly_name: "Ellie energy added at Herrgården"
-        unit_of_measurement: "kWh"
+      ellie_power_at_herrgarden:
+        friendly_name: "Ellie power at Herrgården"
+        unit_of_measurement: "W"
         value_template: >
           {% if is_state('device_tracker.ellie_location_tracker', 'lilla_herrgarden') %}
-          {{ states('sensor.ellie_energy_added') }}
+          {{ states('sensor.ellie_charger_power') }}
+          {% else %}
+          {{ 0.0 }}
           {% endif %}
-      ellie_energy_added_at_blavinge:
-        friendly_name: "Ellie energy added at Blåvinge"
-        unit_of_measurement: "kWh"
+      ellie_power_cost_at_herrgarden:
+        friendly_name: "Ellie power cost at Herrgården"
+        unit_of_measurement: "SEK"
+        icon_template: "mdi:currency-eur"
+        value_template: >
+          {% set power = states('sensor.ellie_power_at_herrgarden') | float %}
+          {% set cost = states('sensor.totalt_elpris_se3') | float %}
+          {% if is_state('device_tracker.ellie_location_tracker', 'lilla_herrgarden') %}
+          {{ power * cost / 1000 }}
+          {% else %}
+          {{ 0.0 }}
+          {% endif %}
+      #ellie_energy_added_at_herrgarden:
+      #  friendly_name: "Ellie energy added at Herrgården"
+      #  unit_of_measurement: "kWh"
+      #  value_template: >
+      #    {% if is_state('device_tracker.ellie_location_tracker', 'lilla_herrgarden') %}
+      #    {{ states('sensor.ellie_energy_added') }}
+      #    {% endif %}
+      ellie_power_at_blavinge:
+        friendly_name: "Ellie power at Blåvinge"
+        unit_of_measurement: "W"
         value_template: >
           {% if is_state('device_tracker.ellie_location_tracker', 'home') %}
-          {{ states('sensor.ellie_energy_added') }}
+          {{ states('sensor.ellie_charger_power') }}
+          {% else %}
+          {{ 0.0 }}
           {% endif %}
+      ellie_power_cost_at_blavinge:
+        friendly_name: "Ellie power cost at Blåvinge"
+        unit_of_measurement: "SEK"
+        icon_template: "mdi:currency-eur"
+        value_template: >
+          {% set power = states('sensor.ellie_power_at_blavinge') | float %}
+          {% set cost = states('sensor.totalt_elpris') | float %}
+          {% if is_state('device_tracker.ellie_location_tracker', 'home') %}
+          {{ power * cost / 1000 }}
+          {% else %}
+          {{ 0.0 }}
+          {% endif %}
+      #ellie_energy_added_at_blavinge:
+      #  friendly_name: "Ellie energy added at Blåvinge"
+      #  unit_of_measurement: "kWh"
+      #  value_template: >
+      #    {% if is_state('device_tracker.ellie_location_tracker', 'home') %}
+      #    {{ states('sensor.ellie_energy_added') }}
+      #    {% endif %}
       outdoor_latest_real_temperature:
         friendly_name: "Senaste riktiga yttertemperaturen"
         unit_of_measurement: "°C"
