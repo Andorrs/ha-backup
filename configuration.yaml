@@ -121,30 +121,36 @@ sensor:
         icon_template: "mdi:currency-eur"
         value_template: >
           {% set days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] %}
-          {% set monthly_usage = [1867, 1371, 1865, 1474, 1214, 768, 1314, 955, 796, 1279, 1710, 1705] %}
+          {% set monthly_usage = [2218, 2007, 1662, 1662, 1294, 1172, 1314, 942, 1096, 1591, 1966, 2102] %}
           {% set i = now().month - 1 %}
           {% set spotpris = states('sensor.nordpool_kwh_se4_sek_2_10_0') | float %}
-          {% set elbolag_avgifter = 18.92 | float %}
+          {% set days_in_year = states('input_number.days_in_year') | float %}
+          {% set elbolag_avgifter = 18.10 * 0.8 | float %}
+          {% set elbolag_arsavgift = 58800 %}
+          {% set elbolag_fast_avgift = (elbolag_arsavgift * 0.8 / days_in_year * days_in_month[i] / monthly_usage[i]) | float %}
           {% set elnat_arsavgift = 684400 | int %}
-          {% set elnat_fast_avgift = (elnat_arsavgift / 365 * days_in_month[i] / monthly_usage[i]) | float %}
-          {% set elnat_overforing = 18.00 | float %}
+          {% set elnat_fast_avgift = (elnat_arsavgift / days_in_year * days_in_month[i] / monthly_usage[i]) | float %}
+          {% set elnat_overforing = 17.36 | float %}
           {% set elnat_energiskatt = 42.80 | float %}
-          {{ ((spotpris + elbolag_avgifter + elnat_fast_avgift + elnat_overforing + elnat_energiskatt) * 1.25 / 100) | round(2) }}
+          {{ ((spotpris + elbolag_fast_avgift + elbolag_avgifter + elnat_fast_avgift + elnat_overforing + elnat_energiskatt) * 1.25 / 100) | round(2) }}
       totalt_elpris_se3:
         friendly_name: Totalt elpris SE3
         unit_of_measurement: "SEK/kWh"
         icon_template: "mdi:currency-eur"
         value_template: >
           {% set days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] %}
-          {% set monthly_usage = [1867, 1371, 1865, 1474, 1214, 768, 1314, 955, 796, 1279, 1710, 1705] %}
+          {% set monthly_usage = [2218, 2007, 1662, 1662, 1294, 1172, 1314, 942, 1096, 1591, 1966, 2102] %}
           {% set i = now().month - 1 %}
           {% set spotpris = states('sensor.nordpool_kwh_se3_sek_2_10_0') | float %}
-          {% set elbolag_avgifter = 18.92 | float %}
+          {% set days_in_year = states('input_number.days_in_year') | float %}
+          {% set elbolag_avgifter = 18.10 * 0.8 | float %}
+          {% set elbolag_manadsavgift = 6900 %}
+          {% set elbolag_fast_avgift = (elbolag_manadsavgift * 0.8 / days_in_month[i] / monthly_usage[i]) | float %}
           {% set elnat_arsavgift = 491600 | int %}
-          {% set elnat_fast_avgift = (elnat_arsavgift / 365 * days_in_month[i] / monthly_usage[i]) | float %}
+          {% set elnat_fast_avgift = (elnat_arsavgift / days_in_year * days_in_month[i] / monthly_usage[i]) | float %}
           {% set elnat_overforing = 27.20 | float %}
           {% set elnat_energiskatt = 42.80 | float %}
-          {{ ((spotpris + elbolag_avgifter + elnat_fast_avgift + elnat_overforing + elnat_energiskatt) * 1.25 / 100) | round(2) }}
+          {{ ((spotpris + elbolag_fast_avgift + elbolag_avgifter + elnat_fast_avgift + elnat_overforing + elnat_energiskatt) * 1.25 / 100) | round(2) }}
       wallconnector_power_cost:
         friendly_name: "Wallconnector kostnad"
         unit_of_measurement: "SEK"

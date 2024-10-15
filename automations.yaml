@@ -141,17 +141,17 @@
 - id: '1678197834461'
   alias: Ellie lämnar Iconovo
   description: ''
-  trigger:
-  - platform: zone
-    entity_id: device_tracker.ellie_location_tracker
+  triggers:
+  - entity_id: device_tracker.ellie_location_tracker
     zone: zone.iconovo
     event: leave
-  condition: []
-  action:
-  - device_id: ef52a483bbf741a868fe93580a976531
-    domain: mobile_app
-    type: notify
-    message: Ellie lämnar Iconovo
+    trigger: zone
+  conditions: []
+  actions:
+  - action: script.send_notification_to_phone
+    metadata: {}
+    data:
+      message: Ellie lämnar Iconovo
   mode: single
 - id: '1679586049465'
   alias: Ringhals 4 igång
@@ -853,4 +853,25 @@
     device_id: 580c9e6c7fe90033d523981df0f16349
     entity_id: 9a1fa789a26a592ec4418c4069b4e527
     domain: switch
+  mode: single
+- id: '1728890667856'
+  alias: Trigger calculation of days of year
+  description: ''
+  triggers:
+  - trigger: calendar
+    entity_id: calendar.nyarsdagen
+    event: start
+    offset: 0:0:0
+  conditions: []
+  actions:
+  - action: script.calculate_days_of_year
+    metadata: {}
+    data: {}
+    response_variable: result
+  - action: input_number.set_value
+    target:
+      entity_id: input_number.days_in_year
+    data:
+      value: '{{ result.value }}'
+    enabled: true
   mode: single
