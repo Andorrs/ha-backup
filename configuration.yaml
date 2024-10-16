@@ -152,7 +152,7 @@ sensor:
           {% set elnat_energiskatt = 42.80 | float %}
           {{ ((spotpris + elbolag_fast_avgift + elbolag_avgifter + elnat_fast_avgift + elnat_overforing + elnat_energiskatt) * 1.25 / 100) | round(2) }}
       wallconnector_power_cost:
-        friendly_name: "Wallconnector kostnad"
+        friendly_name: "Wallconnector kostnad momentan"
         unit_of_measurement: "SEK"
         icon_template: "mdi:currency-eur"
         value_template: >
@@ -180,7 +180,7 @@ sensor:
           {{ 0.0 }}
           {% endif %}
       wallconnector_power_cost_alex_o_elin:
-        friendly_name: "Wallconnector kostnad Alex o Elin"
+        friendly_name: "Wallconnector kostnad momentan Alex o Elin"
         unit_of_measurement: "SEK"
         icon_template: "mdi:currency-eur"
         value_template: >
@@ -192,7 +192,7 @@ sensor:
           {{ 0.0 }}
           {% endif %}
       wallconnector_power_cost_lennart_o_suzanne:
-        friendly_name: "Wallconnector kostnad Lennart o Suzanne"
+        friendly_name: "Wallconnector kostnad momentan Lennart o Suzanne"
         unit_of_measurement: "SEK"
         icon_template: "mdi:currency-eur"
         value_template: >

@@ -42,10 +42,10 @@
   description: '
 
     '
-  trigger:
-  - platform: time
-    at: '23:45:00'
-  condition:
+  triggers:
+  - at: '23:30:00'
+    trigger: time
+  conditions:
   - condition: time
     weekday:
     - sun
@@ -56,14 +56,14 @@
   - condition: state
     entity_id: input_boolean.helgdag_nastkommande_dag
     state: 'off'
-  action:
-  - service: switch.turn_off
-    data: {}
+  actions:
+  - data: {}
     target:
       area_id:
       - hallen
       - kitchen
       - living_room
+    action: switch.turn_off
   mode: single
 - id: '1675459502892'
   alias: Släck nedanvåning dag före helg
@@ -125,19 +125,6 @@
     target:
       area_id: kitchen
   mode: single
-- id: '1676745092205'
-  alias: Släcka alla lampor på kvällen
-  description: ''
-  trigger:
-  - platform: time
-    at: '23:30:00'
-  condition: []
-  action:
-  - service: scene.turn_on
-    target:
-      entity_id: scene.gonatt
-    metadata: {}
-  mode: single
 - id: '1678197834461'
   alias: Ellie lämnar Iconovo
   description: ''
@@ -152,20 +139,6 @@
     metadata: {}
     data:
       message: Ellie lämnar Iconovo
-  mode: single
-- id: '1679586049465'
-  alias: Ringhals 4 igång
-  description: ''
-  trigger:
-  - platform: numeric_state
-    entity_id: sensor.ringhals4_procent
-    above: 5
-  condition: []
-  action:
-  - device_id: dcbe585a9488eb377233b3edf747c216
-    domain: mobile_app
-    type: notify
-    message: Nu har R4 startat!
   mode: single
 - id: '1679665932545'
   alias: ZHA - IKEA TRADFRI - 5 Button Remote - Custom Actions
@@ -222,41 +195,21 @@
 - id: '1680605346366'
   alias: Kolla om nästa dag är helgdag
   description: ''
-  trigger:
-  - platform: time
-    at: input_datetime.annandag_jul
-  - platform: time
-    at: input_datetime.annandag_pask
-  - platform: time
-    at: input_datetime.forsta_maj
-  - platform: time
-    at: input_datetime.julafton
-  - platform: time
-    at: input_datetime.juldagen
-  - platform: time
-    at: input_datetime.kristi_himmelsfardsdag
-  - platform: time
-    at: input_datetime.langfredag
-  - platform: time
-    at: input_datetime.midsommarafton
-  - platform: time
-    at: input_datetime.nationaldagen
-  - platform: time
-    at: input_datetime.new_years_eve
-  - platform: time
-    at: input_datetime.new_years_day
-  - platform: time
-    at: input_datetime.trettondagen
-  condition: []
-  action:
-  - service: input_boolean.turn_on
-    data: {}
+  triggers:
+  - trigger: calendar
+    entity_id: calendar.helgdagar
+    event: start
+    offset: '-23:30:0'
+  conditions: []
+  actions:
+  - data: {}
     target:
       entity_id: input_boolean.helgdag_nastkommande_dag
-  - service: automation.turn_on
-    data: {}
+    action: input_boolean.turn_on
+  - data: {}
     target:
       entity_id: automation.reset_helgdag_nastkommande_dag
+    action: automation.turn_on
   mode: single
 - id: '1680611990233'
   alias: Släck nedanvåning vardag före helgdag
@@ -289,20 +242,20 @@
 - id: '1680612329882'
   alias: Reset Helgdag nästkommande dag
   description: ''
-  trigger:
-  - platform: time
-    at: '23:59:00'
-  condition: []
-  action:
-  - service: input_boolean.turn_off
-    data: {}
+  triggers:
+  - at: '23:59:00'
+    trigger: time
+  conditions: []
+  actions:
+  - data: {}
     target:
       entity_id: input_boolean.helgdag_nastkommande_dag
-  - service: automation.turn_off
-    data:
+    action: input_boolean.turn_off
+  - data:
       stop_actions: false
     target:
       entity_id: automation.reset_helgdag_nastkommande_dag
+    action: automation.turn_off
   mode: single
 - id: '1681394557300'
   alias: iGrill Probe 1 temperatur uppnådd
@@ -790,7 +743,7 @@
   conditions:
   - condition: numeric_state
     entity_id: sensor.nordpool_kwh_se4_sek_2_10_0
-    below: 20
+    below: input_number.grans_elpris_automatisk_varme_bio
   actions:
   - type: turn_on
     device_id: 580c9e6c7fe90033d523981df0f16349
