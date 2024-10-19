@@ -828,3 +828,44 @@
       value: '{{ result.value }}'
     enabled: true
   mode: single
+- id: '1729251760404'
+  alias: Avisering när en reaktor går under 70%
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.okg_procent
+    below: '70'
+    id: OKG
+  - trigger: numeric_state
+    entity_id:
+    - sensor.ringhals3_procent
+    below: 70
+    id: R3
+  - trigger: numeric_state
+    entity_id:
+    - sensor.ringhals4_procent
+    below: 70
+    id: R4
+  - trigger: numeric_state
+    entity_id:
+    - sensor.forsmark1_procent
+    below: 70
+    id: F1
+  - trigger: numeric_state
+    entity_id:
+    - sensor.forsmark2_procent
+    below: 70
+    id: F2
+  - trigger: numeric_state
+    entity_id:
+    - sensor.forsmark3_procent
+    below: 70
+    id: F3
+  conditions: []
+  actions:
+  - action: script.send_notification_to_phone
+    metadata: {}
+    data:
+      message: '{{ trigger.id }} under 70%'
+  mode: single
