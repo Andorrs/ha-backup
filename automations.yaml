@@ -110,20 +110,48 @@
 - id: '1675751680556'
   alias: Släck i köket på morgonen
   description: ''
-  trigger:
-  - platform: time
-    at: 07:40:00
-  condition:
-  - condition: device
-    type: is_on
-    device_id: 3b8970ada7da46bde9a281dea5a4a56e
-    entity_id: switch.koksfonster
-    domain: switch
-  action:
-  - service: switch.turn_off
-    data: {}
+  triggers:
+  - trigger: zone
+    entity_id: person.anders_hedberg
+    zone: zone.home
+    event: leave
+    id: Zone
+  - trigger: time
+    at: 08:30:00
+    id: Time
+  conditions:
+  - condition: and
+    conditions:
+    - condition: device
+      type: is_on
+      device_id: 3b8970ada7da46bde9a281dea5a4a56e
+      entity_id: c11ad5f0072ba31c0b2be6f207331ddf
+      domain: switch
+    - condition: or
+      conditions:
+      - condition: and
+        conditions:
+        - condition: trigger
+          id:
+          - Zone
+        - condition: numeric_state
+          entity_id: sensor.day_of_the_week
+          above: 1
+          below: 5
+      - condition: and
+        conditions:
+        - condition: trigger
+          id:
+          - Time
+        - condition: numeric_state
+          entity_id: sensor.day_of_the_week
+          above: 0
+          below: 6
+  actions:
+  - data: {}
     target:
       area_id: kitchen
+    action: switch.turn_off
   mode: single
 - id: '1678197834461'
   alias: Ellie lämnar Iconovo
@@ -868,4 +896,40 @@
     metadata: {}
     data:
       message: '{{ trigger.id }} under 70%'
+  mode: single
+- id: '1729634785481'
+  alias: Trigger calculation lowest electricity price
+  description: ''
+  triggers:
+  - trigger: time
+    at: '14:30:00'
+  conditions: []
+  actions:
+  - action: script.calculate_lowest_electricity_price
+    metadata: {}
+    data: {}
+    response_variable: result
+  - action: input_number.set_value
+    metadata: {}
+    data:
+      value: '{{ result.value }}'
+    target:
+      entity_id: input_number.el_lowest_price
+  - action: input_text.set_value
+    metadata: {}
+    data:
+      value: '{{ result.day }}'
+    target:
+      entity_id: input_text.el_day_of_lowest_price
+  - action: input_datetime.set_datetime
+    metadata: {}
+    data:
+      time: '{{ result.time }}'
+    target:
+      entity_id: input_datetime.el_time_of_lowest_price
+  - action: script.send_notification_to_phone
+    metadata: {}
+    data:
+      message: Lägsta pris "{{ result.value }}" "{{ result.day }}" kl "{{ result.time
+        }}"
   mode: single

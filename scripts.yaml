@@ -154,3 +154,20 @@ calculate_days_of_year:
   - stop: End
     response_variable: days_of_year
   description: ''
+calculate_lowest_electricity_price:
+  alias: Calculate lowest electricity price
+  variables:
+    lowest_electricity_price: "{% set ns = namespace(min=600.0, day='', time='') %}\n{%
+      for i in [18,19,20,21,22,23] %}\n  {% set val = state_attr('sensor.nordpool_kwh_se4_sek_2_10_0',
+      'today')[i] %}\n  {% if val < ns.min %}\n    {% set ns.min = val %}\n    {%
+      set ns.day = 'idag' %}\n    {% set ns.time = state_attr('sensor.nordpool_kwh_se4_sek_2_10_0',
+      'raw_today')[i].start %}\n  {% endif %}\n{% endfor %}\n{% for i in [0,1,2,3,4,5,6]
+      %}\n  {% set val = state_attr('sensor.nordpool_kwh_se4_sek_2_10_0', 'tomorrow')[i]
+      %}\n  {% if val < ns.min %}\n    {% set ns.min = val %}\n    {% set ns.day =
+      'imorgon' %}\n    {% set ns.time = state_attr('sensor.nordpool_kwh_se4_sek_2_10_0',
+      'raw_tomorrow')[i].start %}\n  {% endif %}\n{% endfor %}\n{{ {'value': ns.min,
+      'day': ns.day, 'time': ns.time.strftime(\"%H:%M\")} }}\n"
+  sequence:
+  - stop: End
+    response_variable: lowest_electricity_price
+  description: ''

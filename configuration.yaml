@@ -261,6 +261,9 @@ sensor:
           {% else %}
           {{ states('sensor.outdoor_latest_temperature') }}
           {% endif %}
+      day_of_the_week:
+        friendly_name: "Day of the week"
+        value_template: "{{ now().weekday() + 1 }}"
 
 ########### iGRILL ALERT SENSORS ############
 template:
