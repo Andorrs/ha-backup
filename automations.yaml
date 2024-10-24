@@ -134,19 +134,26 @@
         - condition: trigger
           id:
           - Zone
-        - condition: numeric_state
-          entity_id: sensor.day_of_the_week
-          above: 1
-          below: 5
+        - condition: time
+          before: 09:00:00
+          weekday:
+          - mon
+          - tue
+          - wed
+          - thu
+          - fri
       - condition: and
         conditions:
         - condition: trigger
           id:
           - Time
-        - condition: numeric_state
-          entity_id: sensor.day_of_the_week
-          above: 0
-          below: 6
+        - condition: time
+          weekday:
+          - mon
+          - tue
+          - wed
+          - thu
+          - fri
   actions:
   - data: {}
     target:
@@ -915,6 +922,12 @@
       value: '{{ result.value }}'
     target:
       entity_id: input_number.el_lowest_price
+  - action: input_number.set_value
+    metadata: {}
+    data:
+      value: '{{ result.min_next }}'
+    target:
+      entity_id: input_number.el_lowest_price_next_evening
   - action: input_text.set_value
     metadata: {}
     data:
@@ -930,6 +943,66 @@
   - action: script.send_notification_to_phone
     metadata: {}
     data:
-      message: Lägsta pris "{{ result.value }}" "{{ result.day }}" kl "{{ result.time
-        }}"
+      message: Lägsta pris {{ result.value }} {{ result.day }} kl {{ result.time }}
+  - action: input_select.select_option
+    metadata: {}
+    data:
+      option: Red
+    target:
+      entity_id: input_select.charging_color_lamp
+  mode: single
+- id: '1729667737900'
+  alias: Set charging color lamp
+  description: ''
+  triggers:
+  - trigger: time
+    at: '14:35:00'
+  conditions:
+  - condition: numeric_state
+    entity_id: input_number.el_lowest_price
+    below: 30
+  actions:
+  - if:
+    - condition: numeric_state
+      entity_id: input_number.el_lowest_price_next_evening
+      below: input_number.el_lowest_price
+    then:
+    - action: input_select.select_option
+      metadata: {}
+      data:
+        option: Orange
+      target:
+        entity_id: input_select.charging_color_lamp
+    else:
+    - action: input_select.select_option
+      metadata: {}
+      data:
+        option: Green
+      target:
+        entity_id: input_select.charging_color_lamp
+  mode: single
+- id: '1729668130270'
+  alias: Clear charging color lamp
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.tesla_wall_connector_vehicle_connected
+    to: 'on'
+  - trigger: state
+    entity_id:
+    - device_tracker.ellie_location_tracker
+    to: home
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  conditions: []
+  actions:
+  - action: input_select.select_option
+    metadata: {}
+    data:
+      option: Normal
+    target:
+      entity_id: input_select.charging_color_lamp
   mode: single
