@@ -667,18 +667,6 @@
     entity_id: 9a1fa789a26a592ec4418c4069b4e527
     domain: switch
   mode: single
-- id: '1700168392617'
-  alias: ZHA - IKEA Remote 4 button sovrum
-  description: ''
-  use_blueprint:
-    path: niro1987/zha_ikea_tradfri_5button_remote_custom.yaml
-    input:
-      remote: 12f04b6e7c7de30a45fe4a78fa0f982d
-      power_short:
-      - service: switch.toggle
-        data: {}
-        target:
-          device_id: 026baa57249f5ca7a1ca21b2887edba8
 - id: '1700168691016'
   alias: ZHA - IKEA four button remote for lights
   description: ''
@@ -1006,3 +994,14 @@
     target:
       entity_id: input_select.charging_color_lamp
   mode: single
+- id: '1729845325742'
+  alias: ZHA - IKEA four button remote for lights garage
+  description: Tänder taklamporna i garaget
+  use_blueprint:
+    path: Malte/zha-ikea-four-button-remote-styrbar-for-lights-e2001-e2002.yaml
+    input:
+      remote: 542e9ac054902c7dc7ae82af75b455c5
+      light:
+        entity_id: light.ikea_tradfri_driver_10w_garage_light_2
+      brightness: 100
+      force_brightness: true
