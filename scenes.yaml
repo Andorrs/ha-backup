@@ -48,6 +48,84 @@
     switch.sovrumsfonster:
       friendly_name: Sovrumsfönster
       state: 'on'
+    light.ikea_tradfri_bulb_soffhorn_1_light:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 4000
+      min_mireds: 250
+      max_mireds: 454
+      supported_color_modes:
+      - color_temp
+      color_mode: color_temp
+      brightness: 153
+      color_temp_kelvin: 2702
+      color_temp: 370
+      hs_color:
+      - 28.391
+      - 65.659
+      rgb_color:
+      - 255
+      - 166
+      - 87
+      xy_color:
+      - 0.526
+      - 0.387
+      off_with_transition: false
+      off_brightness:
+      friendly_name: IKEA TRADFRI bulb Soffhörn 1 Light
+      supported_features: 40
+      state: 'on'
+    light.ikea_tradfri_bulb_soffhorn_2_light:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 4000
+      min_mireds: 250
+      max_mireds: 454
+      supported_color_modes:
+      - color_temp
+      color_mode: color_temp
+      brightness: 198
+      color_temp_kelvin: 2702
+      color_temp: 370
+      hs_color:
+      - 28.391
+      - 65.659
+      rgb_color:
+      - 255
+      - 166
+      - 87
+      xy_color:
+      - 0.526
+      - 0.387
+      off_with_transition: false
+      off_brightness:
+      friendly_name: IKEA TRADFRI bulb Soffhörn 2 Light
+      supported_features: 40
+      state: 'on'
+    light.ikea_tradfri_bulb_sonos_light:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 4000
+      min_mireds: 250
+      max_mireds: 454
+      supported_color_modes:
+      - color_temp
+      color_mode: color_temp
+      brightness: 101
+      color_temp_kelvin: 2702
+      color_temp: 370
+      hs_color:
+      - 28.391
+      - 65.659
+      rgb_color:
+      - 255
+      - 166
+      - 87
+      xy_color:
+      - 0.526
+      - 0.387
+      off_with_transition: false
+      off_brightness:
+      friendly_name: IKEA TRADFRI bulb Sonos Light
+      supported_features: 40
+      state: 'on'
   metadata: {}
   icon: mdi:desk-lamp-on
 - id: '1716149598913'
@@ -77,4 +155,184 @@
       friendly_name: Rullgardin 2 Cover
       supported_features: 15
       state: open
+  metadata: {}
+- id: '1729950701465'
+  name: Lampor nedanvåning lyser
+  entities:
+    light.ikea_tradfri_bulb_sonos_light:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 4000
+      min_mireds: 250
+      max_mireds: 454
+      supported_color_modes:
+      - color_temp
+      color_mode: color_temp
+      brightness: 101
+      color_temp_kelvin: 2702
+      color_temp: 370
+      hs_color:
+      - 28.391
+      - 65.659
+      rgb_color:
+      - 255
+      - 166
+      - 87
+      xy_color:
+      - 0.526
+      - 0.387
+      off_with_transition: false
+      off_brightness:
+      friendly_name: IKEA TRADFRI bulb Sonos Light
+      supported_features: 40
+      state: 'on'
+    light.ikea_tradfri_bulb_soffhorn_1_light:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 4000
+      min_mireds: 250
+      max_mireds: 454
+      supported_color_modes:
+      - color_temp
+      color_mode: color_temp
+      brightness: 153
+      color_temp_kelvin: 2702
+      color_temp: 370
+      hs_color:
+      - 28.391
+      - 65.659
+      rgb_color:
+      - 255
+      - 166
+      - 87
+      xy_color:
+      - 0.526
+      - 0.387
+      off_with_transition: false
+      off_brightness:
+      friendly_name: IKEA TRADFRI bulb Soffhörn 1 Light
+      supported_features: 40
+      state: 'on'
+    light.ikea_tradfri_bulb_soffhorn_2_light:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 4000
+      min_mireds: 250
+      max_mireds: 454
+      supported_color_modes:
+      - color_temp
+      color_mode: color_temp
+      brightness: 198
+      color_temp_kelvin: 2702
+      color_temp: 370
+      hs_color:
+      - 28.391
+      - 65.659
+      rgb_color:
+      - 255
+      - 166
+      - 87
+      xy_color:
+      - 0.526
+      - 0.387
+      off_with_transition: false
+      off_brightness:
+      friendly_name: IKEA TRADFRI bulb Soffhörn 2 Light
+      supported_features: 40
+      state: 'on'
+    switch.shellyplug_s_083a8dc276d5:
+      friendly_name: Soffa
+      state: 'on'
+    switch.shellyplug_s_083a8dc1890b:
+      friendly_name: String
+      state: 'on'
+    switch.shellyplug_s_083a8dc31b03:
+      friendly_name: Entré
+      state: 'on'
+    switch.koksfonster:
+      friendly_name: Köksfönster
+      state: 'on'
+  metadata: {}
+- id: '1729950876687'
+  name: Lampor ovanvåning lyser
+  entities:
+    switch.shellyplug_s_083a8dc0c3e4:
+      friendly_name: TV-bänk
+      state: 'on'
+    switch.sovrumsfonster:
+      friendly_name: Sovrumsfönster
+      state: 'on'
+    switch.isaks_fonster:
+      friendly_name: Isaks lampa
+      state: 'on'
+  metadata: {}
+- id: '1729981902349'
+  name: Lampor nedanvåning släckta
+  entities:
+    switch.shellyplug_s_083a8dc31b03:
+      friendly_name: Entré
+      state: 'off'
+    switch.koksfonster:
+      friendly_name: Köksfönster
+      state: 'off'
+    switch.shellyplug_s_083a8dc1890b:
+      friendly_name: String
+      state: 'off'
+    switch.shellyplug_s_083a8dc276d5:
+      friendly_name: Soffa
+      state: 'off'
+    light.ikea_tradfri_bulb_soffhorn_1_light:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 4000
+      min_mireds: 250
+      max_mireds: 454
+      supported_color_modes:
+      - color_temp
+      color_mode:
+      brightness:
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      rgb_color:
+      xy_color:
+      off_with_transition: false
+      off_brightness: 153
+      friendly_name: IKEA TRADFRI bulb Soffhörn 1 Light
+      supported_features: 40
+      state: 'off'
+    light.ikea_tradfri_bulb_soffhorn_2_light:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 4000
+      min_mireds: 250
+      max_mireds: 454
+      supported_color_modes:
+      - color_temp
+      color_mode:
+      brightness:
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      rgb_color:
+      xy_color:
+      off_with_transition: false
+      off_brightness: 148
+      friendly_name: IKEA TRADFRI bulb Soffhörn 2 Light
+      supported_features: 40
+      state: 'off'
+    light.ikea_tradfri_bulb_sonos_light:
+      min_color_temp_kelvin: 2202
+      max_color_temp_kelvin: 4000
+      min_mireds: 250
+      max_mireds: 454
+      supported_color_modes:
+      - color_temp
+      color_mode:
+      brightness:
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      rgb_color:
+      xy_color:
+      off_with_transition: false
+      off_brightness: 101
+      friendly_name: IKEA TRADFRI bulb Sonos Light
+      supported_features: 40
+      state: 'off'
   metadata: {}
