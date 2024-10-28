@@ -62,22 +62,19 @@
 - id: '1675459502892'
   alias: Släck nedanvåning dag före helg
   description: ''
-  trigger:
-  - platform: time
-    at: '23:55:00'
-  condition:
+  triggers:
+  - at: '23:55:00'
+    trigger: time
+  conditions:
   - condition: time
     weekday:
     - sat
     - fri
-  action:
-  - service: switch.turn_off
-    data: {}
+  actions:
+  - action: scene.turn_on
+    metadata: {}
     target:
-      area_id:
-      - hallen
-      - kitchen
-      - living_room
+      entity_id: scene.lampor_nedanvaning_slackta
   mode: single
 - id: '1675725633087'
   alias: Tänd i köket på jobbdag
@@ -1012,6 +1009,129 @@
     data: {}
     target:
       entity_id:
+      - light.ikea_tradfri_bulb_utekorridor_1_light
+      - light.ikea_tradfri_bulb_utekorridor_2_light
+      - light.ikea_tradfri_bulb_utekorridor_3_light_2
+  mode: single
+- id: '1730016793262'
+  alias: Tänd utomhus vid solnedgång
+  description: ''
+  triggers:
+  - trigger: sun
+    event: sunset
+    offset: 0
+  conditions: []
+  actions:
+  - action: light.turn_on
+    metadata: {}
+    data: {}
+    target:
+      device_id:
+      - f089d0ffeaaf1489834c8b95c8130769
+      - ceb7496fef7e119164f22d5412d06d9e
+      - 305e807f0f5bbfc7c12fd3f2cfb8c4e4
+      - 3c57a94e5a8a7e4dccadd49957b6faab
+      - 76f3fba7abd2dfb73929ad02d32fe85d
+  mode: single
+- id: '1730026566899'
+  alias: Tänd i garaget
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.ikea_parasoll_sensor_garagedorr_opening
+    from: 'off'
+    to: 'on'
+  - trigger: state
+    entity_id:
+    - binary_sensor.ikea_parasoll_sensor_garageport_opening
+    from: 'off'
+    to: 'on'
+  - trigger: state
+    entity_id:
+    - binary_sensor.motion_sensor_garage_occupancy
+    from: 'off'
+    to: 'on'
+  conditions:
+  - condition: state
+    entity_id: light.ikea_tradfri_driver_10w_garage_light_2
+    state: 'off'
+  actions:
+  - type: turn_on
+    device_id: 58845982e6a1dcdb8a3893ddf4f5dd78
+    entity_id: 343dca463da084477b06468a2be7faad
+    domain: light
+  mode: single
+- id: '1730026629200'
+  alias: Släck i garaget
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.ikea_parasoll_sensor_garagedorr_opening
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 15
+    id: Door
+  - trigger: state
+    entity_id:
+    - binary_sensor.ikea_parasoll_sensor_garageport_opening
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 15
+    id: Door
+  - trigger: state
+    entity_id:
+    - binary_sensor.motion_sensor_garage_occupancy
+    from: 'on'
+    to: 'off'
+    id: Motion
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - Door
+      - condition: state
+        entity_id: binary_sensor.motion_sensor_garage_occupancy
+        state: 'off'
+      sequence:
+      - type: turn_off
+        device_id: 58845982e6a1dcdb8a3893ddf4f5dd78
+        entity_id: 343dca463da084477b06468a2be7faad
+        domain: light
+    - conditions:
+      - condition: trigger
+        id:
+        - Motion
+      sequence:
+      - type: turn_off
+        device_id: 58845982e6a1dcdb8a3893ddf4f5dd78
+        entity_id: 343dca463da084477b06468a2be7faad
+        domain: light
+  mode: single
+- id: '1730063480161'
+  alias: Släck utomhus
+  description: ''
+  triggers:
+  - trigger: time
+    at: 00:15:00
+  conditions: []
+  actions:
+  - action: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id:
+      - light.ikea_tradfri_bulb_altan_1_light
+      - light.ikea_tradfri_bulb_altan_2_light
       - light.ikea_tradfri_bulb_utekorridor_1_light
       - light.ikea_tradfri_bulb_utekorridor_2_light
       - light.ikea_tradfri_bulb_utekorridor_3_light_2
