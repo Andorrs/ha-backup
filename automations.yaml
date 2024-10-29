@@ -884,8 +884,12 @@
   alias: Trigger calculation lowest electricity price
   description: ''
   triggers:
-  - trigger: time
-    at: '14:30:00'
+  - trigger: state
+    entity_id:
+    - sensor.nordpool_kwh_se4_sek_2_10_0
+    attribute: tomorrow_valid
+    from: 'false'
+    to: 'true'
   conditions: []
   actions:
   - action: script.calculate_lowest_electricity_price
@@ -931,8 +935,16 @@
   alias: Set charging color lamp
   description: ''
   triggers:
-  - trigger: time
-    at: '14:35:00'
+  - trigger: state
+    entity_id:
+    - sensor.nordpool_kwh_se4_sek_2_10_0
+    attribute: tomorrow_valid
+    from: 'false'
+    to: 'true'
+    for:
+      hours: 0
+      minutes: 2
+      seconds: 0
   conditions:
   - condition: numeric_state
     entity_id: input_number.el_lowest_price
@@ -971,7 +983,7 @@
     to: home
     for:
       hours: 0
-      minutes: 5
+      minutes: 2
       seconds: 0
   conditions: []
   actions:
