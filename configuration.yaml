@@ -1,3 +1,7 @@
+homeassistant:
+  allowlist_external_dirs:
+    - "/config/csv"
+
 # Loads default set of integrations. Do not remove.
 default_config:
 

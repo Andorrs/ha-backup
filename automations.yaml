@@ -888,8 +888,8 @@
     entity_id:
     - sensor.nordpool_kwh_se4_sek_2_10_0
     attribute: tomorrow_valid
-    from: 'false'
-    to: 'true'
+    from: 'False'
+    to: 'True'
   conditions: []
   actions:
   - action: script.calculate_lowest_electricity_price
@@ -1147,4 +1147,24 @@
       - light.ikea_tradfri_bulb_utekorridor_1_light
       - light.ikea_tradfri_bulb_utekorridor_2_light
       - light.ikea_tradfri_bulb_utekorridor_3_light_2
+  mode: single
+- id: '1730201437483'
+  alias: Ellie save distance to file
+  description: ''
+  triggers:
+  - trigger: time
+    at: '23:59:00'
+  conditions: []
+  actions:
+  - action: input_number.increment
+    metadata: {}
+    data: {}
+    target:
+      entity_id: input_number.ellie_days_owned
+  - action: notify.send_message
+    target:
+      entity_id: notify.file
+    data:
+      message: '{{ states(''input_number.ellie_days_owned'') | int }},{{ states(''sensor.ellie_odometer'')
+        | round(1) }}'
   mode: single
