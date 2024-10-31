@@ -1044,6 +1044,11 @@
       - 305e807f0f5bbfc7c12fd3f2cfb8c4e4
       - 3c57a94e5a8a7e4dccadd49957b6faab
       - 76f3fba7abd2dfb73929ad02d32fe85d
+  - action: light.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.shellycolorbulb_3494546b669f
   mode: single
 - id: '1730026566899'
   alias: Tänd i garaget
@@ -1147,6 +1152,11 @@
       - light.ikea_tradfri_bulb_utekorridor_1_light
       - light.ikea_tradfri_bulb_utekorridor_2_light
       - light.ikea_tradfri_bulb_utekorridor_3_light_2
+  - action: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.shellycolorbulb_3494546b669f
   mode: single
 - id: '1730201437483'
   alias: Ellie save distance to file
