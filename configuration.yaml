@@ -100,13 +100,6 @@ sensor:
         friendly_name: OKG Procent
         value_template: "{{ (states('sensor.okg_effekt')|int) / 1450 * 100 }}"
         unit_of_measurement: "%"
-      #time_until_jack:
-      #  friendly_name: När ska vi till Ästad?
-      #  value_template: >
-      #    {% set days_until_jack = (as_timestamp("2023-7-8 14:30:00") - as_timestamp(now())) | timestamp_custom("%j")| int %}
-      #    {% set hours_until_jack = (as_timestamp("2023-7-8 14:30:00") - as_timestamp(now())) | timestamp_custom("%H")| int %}
-      #    {% set minutes_until_jack = (as_timestamp("2023-7-8 14:30:00") - as_timestamp(now())) | timestamp_custom("%M")| int %}
-      #    Om {{ days_until_jack - 1 }} dagar, {{ hours_until_jack }} timmar, {{ minutes_until_jack }} minuter
       wallconnector_power:
         friendly_name: Wall Connector Power
         unit_of_measurement: "W"
@@ -372,7 +365,9 @@ mqtt:
 
 logbook:
   exclude:
-    entities: sensor.time_until_jack
+    entities:
+      - sensor.time_until_jack
+      - media_player.65oled707_12
 
 logger:
   default: info
