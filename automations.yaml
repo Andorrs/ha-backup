@@ -749,7 +749,7 @@
   triggers:
   - trigger: numeric_state
     entity_id:
-    - sensor.bio_sensor_temperature
+    - sensor.sonoff_temp_bio_temperature
     below: input_number.bio_lower_temp
   conditions:
   - condition: numeric_state
@@ -805,7 +805,7 @@
   triggers:
   - trigger: numeric_state
     entity_id:
-    - sensor.bio_sensor_temperature
+    - sensor.sonoff_temp_bio_temperature
     above: input_number.bio_upper_temp
   - trigger: numeric_state
     entity_id:
@@ -927,6 +927,16 @@
       option: Red
     target:
       entity_id: input_select.charging_color_lamp
+  - action: mqtt.publish
+    metadata: {}
+    data:
+      evaluate_payload: false
+      qos: '0'
+      retain: false
+      topic: shellies/shellycolorbulb-3494546B669F/color/0/set
+      payload: "{\n  \"mode\": \"color\",\n  \"red\": 255,\n  \"green\": 0,\n  \"blue\":
+        0,\n  \"gain\": 100,\n  \"brightness\": 100, \n  \"white\": 0,\n  \"temp\":
+        3675\n}"
   mode: single
 - id: '1729667737900'
   alias: Set charging color lamp
@@ -955,6 +965,16 @@
         option: Orange
       target:
         entity_id: input_select.charging_color_lamp
+    - action: mqtt.publish
+      metadata: {}
+      data:
+        evaluate_payload: false
+        qos: '0'
+        retain: false
+        payload: "{\n  \"mode\": \"color\",\n  \"red\": 255,\n  \"green\": 255,\n
+          \ \"blue\": 0,\n  \"gain\": 100,\n  \"brightness\": 100, \n  \"white\":
+          0,\n  \"temp\": 3675\n}"
+        topic: shellies/shellycolorbulb-3494546B669F/color/0/set
     else:
     - action: input_select.select_option
       metadata: {}
@@ -962,6 +982,16 @@
         option: Green
       target:
         entity_id: input_select.charging_color_lamp
+    - action: mqtt.publish
+      metadata: {}
+      data:
+        evaluate_payload: false
+        qos: '0'
+        retain: false
+        topic: shellies/shellycolorbulb-3494546B669F/color/0/set
+        payload: "{\n  \"mode\": \"color\",\n  \"red\": 0,\n  \"green\": 255,\n  \"blue\":
+          0,\n  \"gain\": 100,\n  \"brightness\": 100, \n  \"white\": 0,\n  \"temp\":
+          3675\n}"
   mode: single
 - id: '1729668130270'
   alias: Clear charging color lamp
@@ -979,6 +1009,7 @@
       hours: 0
       minutes: 2
       seconds: 0
+    from: not_home
   conditions: []
   actions:
   - action: input_select.select_option
@@ -987,6 +1018,16 @@
       option: Normal
     target:
       entity_id: input_select.charging_color_lamp
+  - action: mqtt.publish
+    metadata: {}
+    data:
+      evaluate_payload: false
+      qos: '0'
+      retain: false
+      topic: shellies/shellycolorbulb-3494546B669F/color/0/set
+      payload: "{\n  \"mode\": \"white\",\n  \"red\": 255,\n  \"green\": 0,\n  \"blue\":
+        0,\n  \"gain\": 100,\n  \"brightness\": 100, \n  \"white\": 0,\n  \"temp\":
+        3675\n}"
   mode: single
 - id: '1729845325742'
   alias: ZHA - IKEA four button remote for lights garage
@@ -1018,6 +1059,11 @@
       - light.ikea_tradfri_bulb_utekorridor_1_light
       - light.ikea_tradfri_bulb_utekorridor_2_light
       - light.ikea_tradfri_bulb_utekorridor_3_light_2
+  - action: light.toggle
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.laddlampa_shelly_rgb
   mode: single
 - id: '1730016793262'
   alias: Tänd utomhus vid solnedgång
@@ -1038,11 +1084,14 @@
       - 305e807f0f5bbfc7c12fd3f2cfb8c4e4
       - 3c57a94e5a8a7e4dccadd49957b6faab
       - 76f3fba7abd2dfb73929ad02d32fe85d
-  - action: light.turn_on
+  - action: mqtt.publish
     metadata: {}
-    data: {}
-    target:
-      entity_id: light.shellycolorbulb_3494546b669f
+    data:
+      evaluate_payload: false
+      qos: '0'
+      retain: false
+      topic: shellies/shellycolorbulb-3494546B669F/color/0/command
+      payload: 'on'
   mode: single
 - id: '1730026566899'
   alias: Tänd i garaget
@@ -1061,6 +1110,11 @@
   - trigger: state
     entity_id:
     - binary_sensor.motion_sensor_garage_occupancy
+    from: 'off'
+    to: 'on'
+  - trigger: state
+    entity_id:
+    - binary_sensor.sonoff_motion_sensor_2_motion
     from: 'off'
     to: 'on'
   conditions:
@@ -1084,8 +1138,8 @@
     to: 'off'
     for:
       hours: 0
-      minutes: 0
-      seconds: 15
+      minutes: 1
+      seconds: 0
     id: Door
   - trigger: state
     entity_id:
@@ -1094,14 +1148,28 @@
     to: 'off'
     for:
       hours: 0
-      minutes: 0
-      seconds: 15
+      minutes: 1
+      seconds: 0
     id: Door
   - trigger: state
     entity_id:
     - binary_sensor.motion_sensor_garage_occupancy
     from: 'on'
     to: 'off'
+    id: Motion
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+  - trigger: state
+    entity_id:
+    - binary_sensor.sonoff_motion_sensor_2_motion
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
     id: Motion
   conditions: []
   actions:
@@ -1113,6 +1181,11 @@
       - condition: state
         entity_id: binary_sensor.motion_sensor_garage_occupancy
         state: 'off'
+      - type: is_no_motion
+        condition: device
+        device_id: 642352d3f752c87b02ef19ed5addc5c2
+        entity_id: 41252a39a13c8d367bb2c2d0f910a809
+        domain: binary_sensor
       sequence:
       - type: turn_off
         device_id: 58845982e6a1dcdb8a3893ddf4f5dd78
@@ -1122,6 +1195,14 @@
       - condition: trigger
         id:
         - Motion
+      - condition: and
+        conditions:
+        - condition: state
+          entity_id: binary_sensor.sonoff_motion_sensor_2_motion
+          state: 'off'
+        - condition: state
+          entity_id: binary_sensor.motion_sensor_garage_occupancy
+          state: 'off'
       sequence:
       - type: turn_off
         device_id: 58845982e6a1dcdb8a3893ddf4f5dd78
@@ -1146,11 +1227,19 @@
       - light.ikea_tradfri_bulb_utekorridor_1_light
       - light.ikea_tradfri_bulb_utekorridor_2_light
       - light.ikea_tradfri_bulb_utekorridor_3_light_2
-  - action: light.turn_off
+  - action: mqtt.publish
+    metadata: {}
+    data:
+      evaluate_payload: false
+      qos: '0'
+      retain: false
+      topic: shellies/shellycolorbulb-3494546B669F/color/0/command
+      payload: 'off'
+  - action: automation.turn_on
     metadata: {}
     data: {}
     target:
-      entity_id: light.shellycolorbulb_3494546b669f
+      entity_id: automation.tand_altan_vid_rorelse
   mode: single
 - id: '1730201437483'
   alias: Ellie save distance to file
@@ -1171,4 +1260,143 @@
     data:
       message: '{{ states(''input_number.ellie_days_owned'') | int }},{{ states(''sensor.ellie_odometer'')
         | round(1) }}'
+  mode: single
+- id: '1730480298342'
+  alias: Tänd utomhus vid rörelse
+  description: ''
+  triggers:
+  - type: occupied
+    device_id: b249d547e77fc04194fdfb66f05d779e
+    entity_id: f09ae860783de517dd6ff39654699a7c
+    domain: binary_sensor
+    trigger: device
+    id: Altan
+  - type: motion
+    device_id: fcefb5b6ea3b6dd6e5a9af3695aaf204
+    entity_id: b57c8e78995abf8499b56aa00174d75f
+    domain: binary_sensor
+    trigger: device
+    id: Utekorridor
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - Altan
+      sequence:
+      - action: light.turn_on
+        metadata: {}
+        data: {}
+        target:
+          device_id:
+          - f089d0ffeaaf1489834c8b95c8130769
+          - ceb7496fef7e119164f22d5412d06d9e
+    - conditions:
+      - condition: trigger
+        id:
+        - Utekorridor
+      sequence:
+      - action: light.turn_on
+        metadata: {}
+        data: {}
+        target:
+          device_id:
+          - 305e807f0f5bbfc7c12fd3f2cfb8c4e4
+          - 3c57a94e5a8a7e4dccadd49957b6faab
+          - 76f3fba7abd2dfb73929ad02d32fe85d
+          entity_id: light.laddlampa_shelly_rgb
+  mode: single
+- id: '1730480348701'
+  alias: Släck altan efter rörelse
+  description: ''
+  triggers:
+  - type: not_occupied
+    device_id: b249d547e77fc04194fdfb66f05d779e
+    entity_id: f09ae860783de517dd6ff39654699a7c
+    domain: binary_sensor
+    trigger: device
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  conditions: []
+  actions:
+  - action: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      device_id:
+      - f089d0ffeaaf1489834c8b95c8130769
+      - ceb7496fef7e119164f22d5412d06d9e
+  mode: single
+- id: '1730481658103'
+  alias: Disable automations at sunrise
+  description: ''
+  triggers:
+  - trigger: sun
+    event: sunrise
+    offset: 0
+  conditions: []
+  actions:
+  - action: automation.turn_off
+    metadata: {}
+    data:
+      stop_actions: true
+    target:
+      entity_id: automation.tand_altan_vid_rorelse
+  mode: single
+- id: '1730507355498'
+  alias: Släck utomhus efter rörelse
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.sonoff_motion_sensor_motion
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 2
+      seconds: 0
+    id: Utekorridor
+  - trigger: state
+    entity_id:
+    - binary_sensor.rorelsesensor_altan_occupancy
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 2
+      seconds: 0
+    id: Altan
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - Utekorridor
+      sequence:
+      - action: light.turn_off
+        metadata: {}
+        data: {}
+        target:
+          device_id:
+          - 305e807f0f5bbfc7c12fd3f2cfb8c4e4
+          - 3c57a94e5a8a7e4dccadd49957b6faab
+          - 76f3fba7abd2dfb73929ad02d32fe85d
+          entity_id: light.laddlampa_shelly_rgb
+    - conditions:
+      - condition: trigger
+        id:
+        - Altan
+      sequence:
+      - action: light.turn_off
+        metadata: {}
+        data: {}
+        target:
+          device_id:
+          - f089d0ffeaaf1489834c8b95c8130769
+          - ceb7496fef7e119164f22d5412d06d9e
   mode: single

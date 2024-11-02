@@ -17,6 +17,7 @@ tts:
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
+mqtt: !include mqtt.yaml
 
 # Added sensors
 sensor:
@@ -356,12 +357,6 @@ rest:
       - name: "SMHI Observation Malmö Luftfuktighet"
         unit_of_measurement: "%"
         value_template: '{{ value_json["values"]["r"]["values"][24].value | float }}'
-
-mqtt:
-  sensor:
-    state_topic: "homeassistant/sensor/igrill_70918f1acee4/status"
-    name: "ESP32 iGrill BLE Client"
-    json_attributes_topic: "homeassistant/sensor/igrill_70918f1acee4/systeminfo"
 
 logbook:
   exclude:

@@ -1,0 +1,15 @@
+sensor:
+  state_topic: "homeassistant/sensor/igrill_70918f1acee4/status"
+  name: "ESP32 iGrill BLE Client"
+  json_attributes_topic: "homeassistant/sensor/igrill_70918f1acee4/systeminfo"
+
+light:
+  name: "Laddlampa Shelly RGB"
+  schema: template
+  max_mireds: 370
+  min_mireds: 154
+  state_template: "{% if value_json.ison %}on{% else %}off{% endif %}"
+  state_topic: "shellies/shellycolorbulb-3494546B669F/color/0/status"
+  command_topic: "shellies/shellycolorbulb-3494546B669F/color/0/command"
+  command_on_template: "on"
+  command_off_template: "off"
