@@ -538,28 +538,32 @@
 - id: '1682509905221'
   alias: Säg till Isak
   description: ''
-  trigger:
-  - platform: state
+  triggers:
+  - trigger: state
     entity_id:
-    - alarm_control_panel.verisure_alarm
-    to: disarmed
-  condition: []
-  action:
+    - input_select.car_connected_to_charger
+    to: Sälen
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+  conditions: []
+  actions:
   - delay:
       hours: 0
       minutes: 0
       seconds: 5
       milliseconds: 0
-  - service: tts.google_translate_say
-    data:
+  - data:
       cache: false
       entity_id: media_player.family_room_speaker
-      message: Sätt på kaffe.
-  - service: automation.turn_off
-    data:
+      message: Glöm inte Veras present och kontanterna.
+    action: tts.google_translate_say
+  - data:
       stop_actions: true
     target:
       entity_id: automation.sag_till_isak
+    action: automation.turn_off
   mode: single
 - id: '1682861248634'
   alias: iGrill Probe 2 Trigger Calculating Remaining Time
@@ -1240,6 +1244,11 @@
     data: {}
     target:
       entity_id: automation.tand_altan_vid_rorelse
+  - action: automation.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: automation.slack_utomhus_efter_rorelse
   mode: single
 - id: '1730201437483'
   alias: Ellie save distance to file
@@ -1345,6 +1354,12 @@
       stop_actions: true
     target:
       entity_id: automation.tand_altan_vid_rorelse
+  - action: automation.turn_off
+    metadata: {}
+    data:
+      stop_actions: true
+    target:
+      entity_id: automation.slack_utomhus_efter_rorelse
   mode: single
 - id: '1730507355498'
   alias: Släck utomhus efter rörelse
