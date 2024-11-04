@@ -165,6 +165,13 @@
     metadata: {}
     data:
       message: Ellie lämnar Iconovo
+  - action: automation.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id:
+      - automation.set_charging_color_lamp
+      - automation.clear_charging_color_lamp
   mode: single
 - id: '1679665932545'
   alias: ZHA - IKEA TRADFRI - 5 Button Remote - Custom Actions
@@ -931,71 +938,78 @@
       option: Red
     target:
       entity_id: input_select.charging_color_lamp
-  - action: mqtt.publish
-    metadata: {}
-    data:
-      evaluate_payload: false
-      qos: '0'
-      retain: false
-      topic: shellies/shellycolorbulb-3494546B669F/color/0/set
-      payload: "{\n  \"mode\": \"color\",\n  \"red\": 255,\n  \"green\": 0,\n  \"blue\":
-        0,\n  \"gain\": 100,\n  \"brightness\": 100, \n  \"white\": 0,\n  \"temp\":
-        3675\n}"
   mode: single
 - id: '1729667737900'
   alias: Set charging color lamp
   description: ''
   triggers:
   - trigger: template
-    value_template: '{{ is_state_attr(''sensor.nordpool_kwh_se4_sek_2_10_0'', ''tomorrow_valid'',
-      true) }}'
-    for:
-      hours: 0
-      minutes: 2
-      seconds: 0
-  conditions:
-  - condition: numeric_state
-    entity_id: input_number.el_lowest_price
-    below: 30
+    value_template: '{{ state_attr(''sensor.ellie_arrival_time'', ''minutes_to_arrival'')
+      | float < 1.0 }}'
+  conditions: []
   actions:
   - if:
     - condition: numeric_state
-      entity_id: input_number.el_lowest_price_next_evening
-      below: input_number.el_lowest_price
+      entity_id: input_number.el_lowest_price
+      below: 30
     then:
-    - action: input_select.select_option
-      metadata: {}
-      data:
-        option: Orange
-      target:
-        entity_id: input_select.charging_color_lamp
-    - action: mqtt.publish
-      metadata: {}
-      data:
-        evaluate_payload: false
-        qos: '0'
-        retain: false
-        payload: "{\n  \"mode\": \"color\",\n  \"red\": 255,\n  \"green\": 255,\n
-          \ \"blue\": 0,\n  \"gain\": 100,\n  \"brightness\": 100, \n  \"white\":
-          0,\n  \"temp\": 3675\n}"
-        topic: shellies/shellycolorbulb-3494546B669F/color/0/set
+    - if:
+      - condition: numeric_state
+        entity_id: input_number.el_lowest_price_next_evening
+        below: input_number.el_lowest_price
+      then:
+      - action: input_select.select_option
+        metadata: {}
+        data:
+          option: Orange
+        target:
+          entity_id: input_select.charging_color_lamp
+      - action: mqtt.publish
+        metadata: {}
+        data:
+          evaluate_payload: false
+          qos: '0'
+          retain: false
+          payload: "{\n  \"mode\": \"color\",\n  \"red\": 255,\n  \"green\": 255,\n
+            \ \"blue\": 0,\n  \"gain\": 100,\n  \"brightness\": 100, \n  \"white\":
+            0,\n  \"temp\": 3675\n}"
+          topic: shellies/shellycolorbulb-3494546B669F/color/0/set
+      else:
+      - action: input_select.select_option
+        metadata: {}
+        data:
+          option: Green
+        target:
+          entity_id: input_select.charging_color_lamp
+      - action: mqtt.publish
+        metadata: {}
+        data:
+          evaluate_payload: false
+          qos: '0'
+          retain: false
+          topic: shellies/shellycolorbulb-3494546B669F/color/0/set
+          payload: "{\n  \"mode\": \"color\",\n  \"red\": 0,\n  \"green\": 255,\n
+            \ \"blue\": 0,\n  \"gain\": 100,\n  \"brightness\": 100, \n  \"white\":
+            0,\n  \"temp\": 3675\n}"
     else:
-    - action: input_select.select_option
-      metadata: {}
-      data:
-        option: Green
-      target:
-        entity_id: input_select.charging_color_lamp
     - action: mqtt.publish
       metadata: {}
       data:
         evaluate_payload: false
-        qos: '0'
+        qos: 0
         retain: false
-        topic: shellies/shellycolorbulb-3494546B669F/color/0/set
-        payload: "{\n  \"mode\": \"color\",\n  \"red\": 0,\n  \"green\": 255,\n  \"blue\":
+        payload: "{\n  \"mode\": \"color\",\n  \"red\": 255,\n  \"green\": 0,\n  \"blue\":
           0,\n  \"gain\": 100,\n  \"brightness\": 100, \n  \"white\": 0,\n  \"temp\":
           3675\n}"
+        topic: shellies/shellycolorbulb-3494546B669F/color/0/set
+  - action: mqtt.publish
+    metadata: {}
+    data:
+      evaluate_payload: false
+      qos: 0
+      retain: false
+      topic: shellies/shellycolorbulb-3494546B669F/color/0/command
+      payload: 'on'
   mode: single
 - id: '1729668130270'
   alias: Clear charging color lamp
@@ -1032,6 +1046,26 @@
       payload: "{\n  \"mode\": \"white\",\n  \"red\": 255,\n  \"green\": 0,\n  \"blue\":
         0,\n  \"gain\": 100,\n  \"brightness\": 100, \n  \"white\": 0,\n  \"temp\":
         3675\n}"
+  - if:
+    - condition: sun
+      before: sunset
+    then:
+    - action: mqtt.publish
+      metadata: {}
+      data:
+        evaluate_payload: false
+        qos: '0'
+        retain: false
+        topic: shellies/shellycolorbulb-3494546B669F/color/0/command
+        payload: 'off'
+  - action: automation.turn_off
+    metadata: {}
+    data:
+      stop_actions: true
+    target:
+      entity_id:
+      - automation.set_charging_color_lamp
+      - automation.clear_charging_color_lamp
   mode: single
 - id: '1729845325742'
   alias: ZHA - IKEA four button remote for lights garage
