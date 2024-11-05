@@ -945,7 +945,7 @@
   triggers:
   - trigger: template
     value_template: '{{ state_attr(''sensor.ellie_arrival_time'', ''minutes_to_arrival'')
-      | float < 1.0 }}'
+      | float < 2.0 }}'
   conditions: []
   actions:
   - if:
@@ -1025,7 +1025,7 @@
     to: home
     for:
       hours: 0
-      minutes: 2
+      minutes: 1
       seconds: 0
     from: not_home
   conditions: []
