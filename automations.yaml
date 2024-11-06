@@ -944,8 +944,8 @@
   description: ''
   triggers:
   - trigger: template
-    value_template: '{{ state_attr(''sensor.ellie_arrival_time'', ''minutes_to_arrival'')
-      | float < 2.0 }}'
+    value_template: '{{ state_attr(''sensor.ellie_arrival_time'', ''Minutes to arrival'')
+      < 1 }}'
   conditions: []
   actions:
   - if:
@@ -1448,4 +1448,21 @@
           device_id:
           - f089d0ffeaaf1489834c8b95c8130769
           - ceb7496fef7e119164f22d5412d06d9e
+  mode: single
+- id: '1730839549009'
+  alias: Enable automations at sunset
+  description: ''
+  triggers:
+  - trigger: sun
+    event: sunset
+    offset: 0
+  conditions: []
+  actions:
+  - action: automation.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id:
+      - automation.tand_altan_vid_rorelse
+      - automation.slack_utomhus_efter_rorelse
   mode: single
