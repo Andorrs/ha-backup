@@ -1394,6 +1394,15 @@
       stop_actions: true
     target:
       entity_id: automation.slack_utomhus_efter_rorelse
+  - action: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id:
+      - light.ikea_tradfri_bulb_utekorridor_2_light
+      - light.ikea_tradfri_bulb_utekorridor_1_light
+      - light.ikea_tradfri_bulb_utekorridor_3_light_2
+      - light.laddlampa_shelly_rgb
   mode: single
 - id: '1730507355498'
   alias: Släck utomhus efter rörelse
