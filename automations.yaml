@@ -1046,6 +1046,14 @@
       payload: "{\n  \"mode\": \"white\",\n  \"red\": 255,\n  \"green\": 0,\n  \"blue\":
         0,\n  \"gain\": 100,\n  \"brightness\": 100, \n  \"white\": 0,\n  \"temp\":
         3675\n}"
+  - action: automation.turn_off
+    metadata: {}
+    data:
+      stop_actions: true
+    target:
+      entity_id:
+      - automation.set_charging_color_lamp
+      - automation.clear_charging_color_lamp
   - if:
     - condition: sun
       before: sunset
@@ -1058,14 +1066,6 @@
         retain: false
         topic: shellies/shellycolorbulb-3494546B669F/color/0/command
         payload: 'off'
-  - action: automation.turn_off
-    metadata: {}
-    data:
-      stop_actions: true
-    target:
-      entity_id:
-      - automation.set_charging_color_lamp
-      - automation.clear_charging_color_lamp
   mode: single
 - id: '1729845325742'
   alias: ZHA - IKEA four button remote for lights garage
