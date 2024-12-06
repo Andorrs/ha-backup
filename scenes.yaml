@@ -306,6 +306,9 @@
     switch.koksfonster:
       friendly_name: Köksfönster
       state: 'on'
+    switch.tretakt_smart_plug_2_switch:
+      friendly_name: TRETAKT Smart plug 2 Switch
+      state: 'on'
   metadata: {}
 - id: '1729950876687'
   name: Lampor ovanvåning lyser
@@ -369,7 +372,7 @@
       rgb_color:
       xy_color:
       off_with_transition: false
-      off_brightness: 148
+      off_brightness: 198
       friendly_name: IKEA TRADFRI bulb Soffhörn 2 Light
       supported_features: 40
       state: 'off'
@@ -391,5 +394,8 @@
       off_brightness: 101
       friendly_name: IKEA TRADFRI bulb Sonos Light
       supported_features: 40
+      state: 'off'
+    switch.tretakt_smart_plug_2_switch:
+      friendly_name: TRETAKT Smart plug 2 Switch
       state: 'off'
   metadata: {}
