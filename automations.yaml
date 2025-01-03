@@ -1476,3 +1476,24 @@
       - automation.tand_altan_vid_rorelse
       - automation.slack_utomhus_efter_rorelse
   mode: single
+- id: '1735827590613'
+  alias: ZHA - IKEA four button remote Vardagsrummet
+  description: ''
+  use_blueprint:
+    path: Malte/zha-ikea-four-button-remote-styrbar-for-lights-e2001-e2002.yaml
+    input:
+      remote: 68d313f8b3212ef82bf14b704cc1cb1b
+      light:
+        area_id: living_room
+      button_left_short:
+      - action: switch.turn_off
+        metadata: {}
+        data: {}
+        target:
+          area_id: living_room
+      button_right_short:
+      - action: switch.turn_on
+        metadata: {}
+        data: {}
+        target:
+          area_id: living_room
