@@ -174,3 +174,16 @@ calculate_lowest_electricity_price:
   - stop: End
     response_variable: lowest_electricity_price
   description: ''
+calculate_max_se3_price:
+  variables:
+    se3_max_electricity_price: "{% set ns = namespace(max=0.0, time='') %}\n{% for
+      i in range(0, 24) %}\n  {% set val = state_attr('sensor.nordpool_kwh_se3_sek_2_10_0',
+      'tomorrow')[i] %}\n  {% if val > ns.max %}\n    {% set ns.max = val %}\n    {%
+      set ns.time = state_attr('sensor.nordpool_kwh_se3_sek_2_10_0', 'raw_tomorrow')[i].start
+      %}\n  {% endif %}\n{% endfor %}\n{{ {'value': ns.max, 'time': ns.time.strftime(\"%H:%M\")}
+      }}\n"
+  sequence:
+  - stop: End
+    response_variable: se3_max_electricity_price
+  alias: Calculate max SE3 price
+  description: ''

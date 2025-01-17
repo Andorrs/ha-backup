@@ -1497,3 +1497,22 @@
         data: {}
         target:
           area_id: living_room
+- id: '1737017949090'
+  alias: Trigger calculation max SE3 price next day
+  description: ''
+  triggers:
+  - trigger: template
+    value_template: '{{ is_state_attr(''sensor.nordpool_kwh_se3_sek_2_10_0_sek_2_10_0'',
+      ''tomorrow_valid'', true) }}'
+  conditions: []
+  actions:
+  - action: script.calculate_max_se3_price
+    metadata: {}
+    data: {}
+    response_variable: result
+  - action: notify.gmail_se3_max_price_notify
+    metadata: {}
+    data:
+      title: Morgondagens spotpris SE3
+      message: Högsta pris {{ result.value }} kl {{ result.time }}
+  mode: single
