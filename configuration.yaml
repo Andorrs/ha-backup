@@ -391,4 +391,5 @@ notify:
     password: !secret google_app_password
     recipient:
       - "hookaman@gmail.com"
+      - "lennart.thor1@gmail.com"
     sender_name: "Anders Home Assistant"
