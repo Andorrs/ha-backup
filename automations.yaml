@@ -1210,6 +1210,9 @@
       minutes: 1
       seconds: 0
     id: Motion
+  - trigger: time
+    at: '19:01:00'
+    id: Time
   conditions:
   - condition: time
     before: 07:00:00
@@ -1237,6 +1240,7 @@
       - condition: trigger
         id:
         - Motion
+        - Time
       - condition: and
         conditions:
         - condition: state
@@ -1518,4 +1522,26 @@
     data:
       title: Morgondagens spotpris SE3
       message: Högsta pris {{ result.value }} kl {{ result.time }}
+  mode: single
+- id: '1737846126562'
+  alias: Tänd i garaget på morgonen
+  description: ''
+  triggers:
+  - trigger: time
+    at: 07:01:00
+  conditions: []
+  actions: []
+  mode: single
+- id: '1737846204407'
+  alias: Tänd i garaget på morgonen
+  description: ''
+  triggers:
+  - trigger: time
+    at: 07:01:00
+  conditions: []
+  actions:
+  - type: turn_on
+    device_id: 58845982e6a1dcdb8a3893ddf4f5dd78
+    entity_id: 343dca463da084477b06468a2be7faad
+    domain: light
   mode: single
