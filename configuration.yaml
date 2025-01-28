@@ -161,7 +161,7 @@ sensor:
         friendly_name: "Wallconnector power Alex o Elin"
         unit_of_measurement: "W"
         device_class: "power"
-        value_template: >min
+        value_template: >
           {% if is_state('input_select.car_connected_to_charger', 'Sälen') %}
           {{ states('sensor.wallconnector_power') }}
           {% else %}
