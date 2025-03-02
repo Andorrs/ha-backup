@@ -1217,7 +1217,7 @@
   - condition: time
     before: 07:00:00
     after: '19:00:00'
-    enabled: true
+    enabled: false
   actions:
   - choose:
     - conditions:
