@@ -1546,3 +1546,41 @@
     entity_id: 343dca463da084477b06468a2be7faad
     domain: light
   mode: single
+- id: '1747513491787'
+  alias: Toggle Isaks remote
+  description: ''
+  triggers:
+  - device_id: 0f51ac71ae34e0eb5bf28a511101f197
+    domain: zha
+    type: remote_button_short_press
+    subtype: open
+    trigger: device
+    id: 'On'
+  - device_id: 0f51ac71ae34e0eb5bf28a511101f197
+    domain: zha
+    type: remote_button_short_press
+    subtype: close
+    trigger: device
+    id: 'Off'
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - 'On'
+      sequence:
+      - type: turn_on
+        device_id: e6c0732afac3735cbc19e44a7c8ae0de
+        entity_id: 046382e3ef78a4355d04992369518163
+        domain: switch
+    - conditions:
+      - condition: trigger
+        id:
+        - 'Off'
+      sequence:
+      - type: turn_off
+        device_id: e6c0732afac3735cbc19e44a7c8ae0de
+        entity_id: 046382e3ef78a4355d04992369518163
+        domain: switch
+  mode: single
