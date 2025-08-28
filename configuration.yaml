@@ -290,22 +290,6 @@ template:
             Normal
           {% endif %}
   - sensor:
-      - name: "target_alert_temp_probe_3"
-        state: >-
-          {% if (states.sensor.igrill_70918f1acee4_probe_3.state | int) >= (states.input_number.igrill_probe_3_target.state | int) %}
-            Alert
-          {% else %}
-            Normal
-          {% endif %}
-  - sensor:
-      - name: "target_alert_temp_probe_4"
-        state: >-
-          {% if (states.sensor.igrill_70918f1acee4_probe_4.state | int) >= (states.input_number.igrill_probe_4_target.state | int) %}
-            Alert
-          {% else %}
-            Normal
-          {% endif %}
-  - sensor:
       - name: "almost_target_alert_temp_probe_1"
         state: >-
           {% if (states.sensor.igrill_70918f1acee4_probe_1.state | int) >= (((states.input_number.igrill_probe_1_target.state | int) - 5) | int) %}
@@ -317,22 +301,6 @@ template:
       - name: "almost_target_alert_temp_probe_2"
         state: >-
           {% if (states.sensor.igrill_70918f1acee4_probe_2.state | int) >= (((states.input_number.igrill_probe_2_target.state | int) - 5) | int) %}
-            Alert
-          {% else %}
-            Normal
-          {% endif %}
-  - sensor:
-      - name: "almost_target_alert_temp_probe_3"
-        state: >-
-          {% if (states.sensor.igrill_70918f1acee4_probe_3.state | int) >= (((states.input_number.igrill_probe_3_target.state | int) - 5) | int) %}
-            Alert
-          {% else %}
-            Normal
-          {% endif %}
-  - sensor:
-      - name: "almost_target_alert_temp_probe_4"
-        state: >-
-          {% if (states.sensor.igrill_70918f1acee4_probe_4.state | int) >= (((states.input_number.igrill_probe_4_target.state | int) - 5) | int) %}
             Alert
           {% else %}
             Normal

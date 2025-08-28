@@ -15,19 +15,19 @@
 - id: '1675427976266'
   alias: Tänd lamporna på ovanvåningen vid solnedgång
   description: ''
-  trigger:
-  - platform: sun
-    event: sunset
-    offset: -00:26
-  condition: []
-  action:
-  - service: switch.turn_on
-    data: {}
+  triggers:
+  - event: sunset
+    offset: -00:30
+    trigger: sun
+  conditions: []
+  actions:
+  - data: {}
     target:
       area_id:
       - isaks_rum
       - bedroom
       - tv_rum
+    action: switch.turn_on
   - type: turn_on
     device_id: 4650455aa4639cc3788fe21f5d97cbf2
     entity_id: light.ikea_of_sweden_tradfri_driver_10w_light
@@ -79,10 +79,10 @@
 - id: '1675725633087'
   alias: Tänd i köket på jobbdag
   description: ''
-  trigger:
-  - platform: time
-    at: 06:30:00
-  condition:
+  triggers:
+  - at: 06:00:00
+    trigger: time
+  conditions:
   - condition: sun
     before: sunrise
   - condition: time
@@ -92,11 +92,11 @@
     - wed
     - tue
     - mon
-  action:
-  - service: switch.turn_on
-    data: {}
+  actions:
+  - data: {}
     target:
       area_id: kitchen
+    action: switch.turn_on
   mode: single
 - id: '1675751680556'
   alias: Släck i köket på morgonen
@@ -204,16 +204,16 @@
 - id: '1680595800407'
   alias: Släck ovanvåning vid frånvaro
   description: ''
-  trigger:
-  - platform: time
-    at: 00:15:00
-  condition:
+  triggers:
+  - at: 00:20:00
+    trigger: time
+  conditions:
   - condition: not
     conditions:
     - condition: zone
       entity_id: device_tracker.ellie_location_tracker
       zone: zone.home
-  action:
+  actions:
   - data: {}
     target:
       area_id:
@@ -643,25 +643,25 @@
 - id: '1696594097797'
   alias: Github backup
   description: ''
-  trigger:
-  - platform: time
-    at: 02:00:00
-  condition: []
-  action:
-  - service: shell_command.pushupdates_to_github
-    data: {}
+  triggers:
+  - at: 02:05:00
+    trigger: time
+  conditions: []
+  actions:
+  - data: {}
+    action: shell_command.pushupdates_to_github
   mode: single
 - id: '1698185967507'
   alias: Stäng av värmefläkt när förstärkaren stängs av
   description: ''
-  trigger:
-  - platform: device
-    device_id: 9ed824f820c7dac6350e3cc927d0966c
+  triggers:
+  - device_id: 9ed824f820c7dac6350e3cc927d0966c
     domain: media_player
     entity_id: 1e8fbc4eff3217a81393f08e61869e8f
     type: turned_off
-  condition: []
-  action:
+    trigger: device
+  conditions: []
+  actions:
   - type: turn_off
     device_id: 580c9e6c7fe90033d523981df0f16349
     entity_id: 9a1fa789a26a592ec4418c4069b4e527
@@ -689,51 +689,53 @@
 - id: '1700168959181'
   alias: Tänd sovrumsfönster
   description: Aktiveras när Ikea-lampan tänds.
-  trigger:
-  - platform: device
-    type: turned_on
+  triggers:
+  - type: turned_on
     device_id: 4650455aa4639cc3788fe21f5d97cbf2
     entity_id: 14cb9daa73e9532259b01afacf40da37
     domain: light
-  condition: []
-  action:
-  - service: switch.turn_on
-    data: {}
+    trigger: device
+  conditions: []
+  actions:
+  - data: {}
     target:
-      device_id: 026baa57249f5ca7a1ca21b2887edba8
+      device_id:
+      - 026baa57249f5ca7a1ca21b2887edba8
+    action: switch.turn_on
   mode: single
 - id: '1700169026847'
   alias: Släck sovrumsfönster
   description: Aktiveras när Ikea-lampan släcks.
-  trigger:
-  - platform: device
-    type: turned_off
+  triggers:
+  - type: turned_off
     device_id: 4650455aa4639cc3788fe21f5d97cbf2
     entity_id: 14cb9daa73e9532259b01afacf40da37
     domain: light
-  condition: []
-  action:
-  - service: switch.turn_off
-    data: {}
+    trigger: device
+  conditions: []
+  actions:
+  - data: {}
     target:
-      device_id: 026baa57249f5ca7a1ca21b2887edba8
+      device_id:
+      - 026baa57249f5ca7a1ca21b2887edba8
+    action: switch.turn_off
   mode: single
 - id: '1700488290551'
   alias: Tänd garderob
   description: När fönstret tänds av Google Home.
-  trigger:
-  - platform: device
-    type: turned_on
+  triggers:
+  - type: turned_on
     device_id: 026baa57249f5ca7a1ca21b2887edba8
     entity_id: 74f8d779989fa155b03b4eb939ac53b0
     domain: switch
-  condition:
+    trigger: device
+  conditions:
   - condition: device
     type: is_off
     device_id: 4650455aa4639cc3788fe21f5d97cbf2
     entity_id: 14cb9daa73e9532259b01afacf40da37
     domain: light
-  action:
+  actions:
   - type: turn_on
     device_id: 4650455aa4639cc3788fe21f5d97cbf2
     entity_id: 14cb9daa73e9532259b01afacf40da37
@@ -742,14 +744,14 @@
 - id: '1700488661885'
   alias: Släck garderob
   description: När sovrumsfönster släcks via Google
-  trigger:
-  - platform: device
-    type: turned_off
+  triggers:
+  - type: turned_off
     device_id: 026baa57249f5ca7a1ca21b2887edba8
     entity_id: 74f8d779989fa155b03b4eb939ac53b0
     domain: switch
-  condition: []
-  action:
+    trigger: device
+  conditions: []
+  actions:
   - type: turn_off
     device_id: 4650455aa4639cc3788fe21f5d97cbf2
     entity_id: 14cb9daa73e9532259b01afacf40da37
