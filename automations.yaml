@@ -33,6 +33,10 @@
     entity_id: light.ikea_of_sweden_tradfri_driver_10w_light
     domain: light
     brightness_pct: 60
+  - type: turn_on
+    device_id: 2413ba79f8dec68d81027a6863a84aa8
+    entity_id: 67d869d372bb2d555b04514dd3400139
+    domain: light
   mode: single
 - id: '1675459420871'
   alias: Släck nedanvåning dag före jobbdag
@@ -224,6 +228,10 @@
   - type: turn_off
     device_id: 4650455aa4639cc3788fe21f5d97cbf2
     entity_id: 14cb9daa73e9532259b01afacf40da37
+    domain: light
+  - type: turn_off
+    device_id: 2413ba79f8dec68d81027a6863a84aa8
+    entity_id: 67d869d372bb2d555b04514dd3400139
     domain: light
   mode: single
 - id: '1680605346366'
@@ -1576,6 +1584,15 @@
         device_id: e6c0732afac3735cbc19e44a7c8ae0de
         entity_id: 046382e3ef78a4355d04992369518163
         domain: switch
+      - type: turn_on
+        device_id: 5ea6ec5c50027be78841d10901d60867
+        entity_id: 5f13041f5a1648d7c39112bd2f63f1be
+        domain: switch
+      - action: light.turn_on
+        metadata: {}
+        data: {}
+        target:
+          device_id: 2413ba79f8dec68d81027a6863a84aa8
     - conditions:
       - condition: trigger
         id:
@@ -1585,4 +1602,13 @@
         device_id: e6c0732afac3735cbc19e44a7c8ae0de
         entity_id: 046382e3ef78a4355d04992369518163
         domain: switch
+      - type: turn_off
+        device_id: 5ea6ec5c50027be78841d10901d60867
+        entity_id: 5f13041f5a1648d7c39112bd2f63f1be
+        domain: switch
+      - action: light.turn_off
+        metadata: {}
+        data: {}
+        target:
+          device_id: 2413ba79f8dec68d81027a6863a84aa8
   mode: single
