@@ -1,0 +1,75 @@
+blueprint:
+  name: Tradfri Wrapper
+  description: "### Workaround for animating both color and brightness in IKEA Tradfri
+    bulbs\nThese bulbs are notorious for all sorts of glitches when trying to animate
+    brightness and color simultaneously. \nThis script will help to animate brightness
+    first and then will animate color or color temperate.\n### Usage\nInstall this
+    script and replace your regular calls to `light.turn_on` to `script.tradfri_wrapper`
+    moving all params to `data`:\n```yaml\n  # That's your usual call\n  action: light.turn_on\n
+    \ target:\n    entity_id: light.tradfri_e14\n  data:\n    kelvin: 2700\n    brightness_pct:
+    100\n\n  # Replace with (make sure to replace script's name if you've changed
+    it):\n  action: script.tradfri_wrapper\n  data:\n    target:\n      entity_id:
+    light.tradfri_e14\n    data:\n      kelvin: 2700\n      brightness_pct: 100\n```\n"
+  domain: script
+  input: {}
+  source_url: https://gist.github.com/brucefoster/6111b5fff712e58d012e782d2a559692
+variables:
+  known_brightness_keys: "{{ [\n      'brightness', 'brightness_pct', \n      'brightness_step_pct',
+    'brightness_step'\n    ] }}\n"
+  known_colors_keys: "{{ [\n      'rgb_color', 'kelvin', \n      'rgbw_color', 'rgbww_color',
+    \n      'color_name', 'hs_color', \n      'xy_color', 'color_temp', \n      'color_temp_kelvin'\n
+    \   ] }}\n"
+  brightness_keys: '{{ known_brightness_keys | select(''in'', data) | list }}
+
+    '
+  colors_keys: '{{ known_colors_keys | select(''in'', data) | list }}
+
+    '
+  simultaneous_change_check: '{{ brightness_keys | count > 0 and colors_keys | count
+    > 0 }}
+
+    '
+  delay: '{{ data["transition"] if "transition" in data else 0.5 }}
+
+    '
+sequence:
+- if:
+  - '{{ simultaneous_change_check == false }}'
+  then:
+  - action: light.turn_on
+    target: '{{ target }}
+
+      '
+    data_template: '{% set data = dict(data , **{''transition'': delay}) %} {{ data
+      }}'
+  else:
+  - action: light.turn_on
+    target: '{{ target }}
+
+      '
+    data_template: "{% set ns = namespace(filtered_data={}) %} {% for key, value in
+      data.items() if key not in colors_keys %}\n    {% set ns.filtered_data = dict(ns.filtered_data
+      , **{key: value}) %}\n{% endfor %} {% set ns.filtered_data = dict(ns.filtered_data
+      , **{'transition': delay}) %} {{ ns.filtered_data }}"
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: '{{ delay + 0.05 }}
+
+        '
+  - action: light.turn_on
+    target: '{{ target }}
+
+      '
+    data_template: "{% set ns = namespace(filtered_data={}) %} {% for key, value in
+      data.items() if key in colors_keys %}\n    {% set ns.filtered_data = dict(ns.filtered_data
+      , **{key: value}) %}\n{% endfor %} {% set ns.filtered_data = dict(ns.filtered_data
+      , **{'transition': delay}) %} {{ ns.filtered_data }}"
+mode: parallel
+fields:
+  target:
+    selector:
+      object:
+  data:
+    selector:
+      object:
