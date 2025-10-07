@@ -158,15 +158,15 @@ calculate_lowest_electricity_price:
   alias: Calculate lowest electricity price
   variables:
     lowest_electricity_price: "{% set ns = namespace(min=600.0, day='', time='', min_next_evening=700.0)
-      %}\n{% for i in [18,19,20,21,22,23] %}\n  {% set val = state_attr('sensor.nordpool_kwh_se4_sek_2_10_0',
+      %}\n{% for i in range(73, 95) %}\n  {% set val = state_attr('sensor.nordpool_kwh_se4_sek_2_10_0',
       'today')[i] %}\n  {% if val < ns.min %}\n    {% set ns.min = val %}\n    {%
       set ns.day = 'idag' %}\n    {% set ns.time = state_attr('sensor.nordpool_kwh_se4_sek_2_10_0',
-      'raw_today')[i].start %}\n  {% endif %}\n{% endfor %}\n{% for i in [0,1,2,3,4,5,6]
-      %}\n  {% set val = state_attr('sensor.nordpool_kwh_se4_sek_2_10_0', 'tomorrow')[i]
+      'raw_today')[i].start %}\n  {% endif %}\n{% endfor %}\n{% for i in range(0,
+      24) %}\n  {% set val = state_attr('sensor.nordpool_kwh_se4_sek_2_10_0', 'tomorrow')[i]
       %}\n  {% if val < ns.min %}\n    {% set ns.min = val %}\n    {% set ns.day =
       'imorgon' %}\n    {% set ns.time = state_attr('sensor.nordpool_kwh_se4_sek_2_10_0',
-      'raw_tomorrow')[i].start %}\n  {% endif %}\n{% endfor %}\n{% for i in [18,19,20,21,22,23]
-      %}\n  {% set val = state_attr('sensor.nordpool_kwh_se4_sek_2_10_0', 'tomorrow')[i]
+      'raw_tomorrow')[i].start %}\n  {% endif %}\n{% endfor %}\n{% for i in range(73,
+      95) %}\n  {% set val = state_attr('sensor.nordpool_kwh_se4_sek_2_10_0', 'tomorrow')[i]
       %}\n  {% if val < ns.min_next_evening %}\n    {% set ns.min_next_evening = val
       %}\n  {% endif %}\n{% endfor %}\n{{ {'value': ns.min, 'day': ns.day, 'time':
       ns.time.strftime(\"%H:%M\"), 'min_next': ns.min_next_evening} }}\n"
@@ -177,7 +177,7 @@ calculate_lowest_electricity_price:
 calculate_max_se3_price:
   variables:
     se3_max_electricity_price: "{% set ns = namespace(max=0.0, time='') %}\n{% for
-      i in range(0, 24) %}\n  {% set val = state_attr('sensor.nordpool_kwh_se3_sek_2_10_0',
+      i in range(0, 96) %}\n  {% set val = state_attr('sensor.nordpool_kwh_se3_sek_2_10_0',
       'tomorrow')[i] %}\n  {% if val > ns.max %}\n    {% set ns.max = val %}\n    {%
       set ns.time = state_attr('sensor.nordpool_kwh_se3_sek_2_10_0', 'raw_tomorrow')[i].start
       %}\n  {% endif %}\n{% endfor %}\n{{ {'value': ns.max, 'time': ns.time.strftime(\"%H:%M\")}
