@@ -783,27 +783,6 @@
     entity_id: 9a1fa789a26a592ec4418c4069b4e527
     domain: switch
   mode: single
-- id: '1728054146015'
-  alias: Ellie open trunk when at store
-  description: ''
-  triggers:
-  - trigger: numeric_state
-    entity_id:
-    - sensor.villa_blavinge_nearest_distance
-    below: 10
-  conditions: []
-  actions:
-  - choose:
-    - conditions:
-      - condition: state
-        entity_id: sensor.villa_blavinge_nearest_direction_of_travel
-        state: towards
-      sequence:
-      - device_id: b9ec38089d4705389ee4a1d0417a2245
-        domain: cover
-        entity_id: 9f5f17844ad0cf8b9e46445fa4da679a
-        type: open
-  mode: single
 - id: '1728375126132'
   alias: Avisering när bil ansluts till laddaren
   description: ''

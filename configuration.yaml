@@ -226,7 +226,7 @@ sensor:
         friendly_name: "Ellie power at Blåvinge"
         unit_of_measurement: "W"
         value_template: >
-          {% if is_state('device_tracker.ellie_location_tracker', 'home') and is_state('input_select.car_connected_to_charger', 'Ellie') %}
+          {% if is_state('input_select.car_connected_to_charger', 'Ellie') %}
           {{ states('sensor.wallconnector_power') }}
           {% else %}
           {{ 0.0 }}
@@ -238,7 +238,7 @@ sensor:
         value_template: >
           {% set power = states('sensor.wallconnector_power') | float %}
           {% set cost = states('sensor.totalt_elpris') | float %}
-          {% if is_state('device_tracker.ellie_location_tracker', 'home') and is_state('input_select.car_connected_to_charger', 'Ellie') %}
+          {% if is_state('input_select.car_connected_to_charger', 'Ellie') %}
           {{ power * cost / 1000 }}
           {% else %}
           {{ 0.0 }}
