@@ -93,7 +93,7 @@ sensor:
     resource: https://www.okg.se/.netlify/functions/getReactorOutput
     name: OKG Effekt
     scan_interval: 1800
-    value_template: "{{ value_json.output }}"
+    value_template: "{{ value_json.value }}"
     unit_of_measurement: MW
   - platform: template
     sensors:
