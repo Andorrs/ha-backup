@@ -187,3 +187,34 @@ calculate_max_se3_price:
     response_variable: se3_max_electricity_price
   alias: Calculate max SE3 price
   description: ''
+compare_power_peaks:
+  alias: Compare power peaks
+  variables:
+    effekt_toppar: "{% set ns = namespace(peak1=10.00, peak2=10.00, peak3=10.00, datetime1='',
+      datetime2='', datetime3='', mean=10.00, power=200000.00) %} {% set ns.power
+      = states('sensor.ell5_253941669_ell5_253941669_energy_active_positive') | float
+      %} {% set previous_power = states('input_number.effekt_forra_timmen') | float
+      %} {% set power_hour = (ns.power - previous_power) | round(2) %} {% set ns.peak1
+      = states('input_number.effekttopp_1') | float %} {% set ns.peak2 = states('input_number.effekttopp_2')
+      | float %} {% set ns.peak3 = states('input_number.effekttopp_3') | float %}
+      {% set ns.datetime1 = states('input_text.effekttopp_1_tid') %} {% set ns.datetime2
+      = states('input_text.effekttopp_2_tid') %} {% set ns.datetime3 = states('input_text.effekttopp_3_tid')
+      %} {% if power_hour > ns.peak1 %}\n  {% set ns.peak3 = ns.peak2 %}\n  {% set
+      ns.peak2 = ns.peak1 %}\n  {% set ns.peak1 = power_hour %}\n  {% set ns.datetime3
+      = ns.datetime2 %}\n  {% set ns.datetime2 = ns.datetime1 %}\n  {% set ns.datetime1
+      = (now().strftime(\"%d/%m\") + ' ' + (now()|as_timestamp - (60*60))|timestamp_custom(\"%H\",
+      True) + '-' + now().strftime(\"%H\")) %}\n{% elif power_hour > ns.peak2 %}\n
+      \ {% set ns.peak3 = ns.peak2 %}\n  {% set ns.peak2 = power_hour %}\n  {% set
+      ns.datetime3 = ns.datetime2 %}\n  {% set ns.datetime2 = (now().strftime(\"%d/%m\")
+      + ' ' + (now()|as_timestamp - (60*60))|timestamp_custom(\"%H\", True) + '-'
+      + now().strftime(\"%H\")) %}\n{% elif power_hour > ns.peak3 %}\n  {% set ns.peak3
+      = power_hour %}\n  {% set ns.datetime3 = (now().strftime(\"%d/%m\") + ' ' +
+      (now()|as_timestamp - (60*60))|timestamp_custom(\"%H\", True) + '-' + now().strftime(\"%H\"))
+      %}\n{% endif %} {% set ns.mean = ((ns.peak1 + ns.peak2 + ns.peak3)/3) | round(2)
+      %} {{ {'peak1':ns.peak1, 'peak2':ns.peak2, 'peak3':ns.peak3, 'datetime1':ns.datetime1,
+      'datetime2':ns.datetime2, 'datetime3':ns.datetime3, 'mean':ns.mean, 'power':ns.power}
+      }}\n"
+  sequence:
+  - stop: End
+    response_variable: effekt_toppar
+  description: ''

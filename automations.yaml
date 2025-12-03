@@ -1596,3 +1596,149 @@
         target:
           device_id: 2413ba79f8dec68d81027a6863a84aa8
   mode: single
+- id: '1764687178057'
+  alias: Trigger Compare Power Peaks
+  description: ''
+  triggers:
+  - trigger: time_pattern
+    hours: /1
+  conditions: []
+  actions:
+  - action: script.compare_power_peaks
+    metadata: {}
+    data: {}
+    response_variable: result
+  - action: input_number.set_value
+    metadata: {}
+    data:
+      value: '{{ result.peak1 }}'
+    target:
+      entity_id: input_number.effekttopp_1
+  - action: input_number.set_value
+    metadata: {}
+    data:
+      value: '{{ result.peak2 }}'
+    target:
+      entity_id: input_number.effekttopp_2
+  - action: input_number.set_value
+    metadata: {}
+    data:
+      value: '{{ result.peak3 }}'
+    target:
+      entity_id: input_number.effekttopp_3
+  - action: input_text.set_value
+    metadata: {}
+    data:
+      value: '{{ result.datetime1 }}'
+    target:
+      entity_id: input_text.effekttopp_1_tid
+  - action: input_text.set_value
+    metadata: {}
+    data:
+      value: '{{ result.datetime2 }}'
+    target:
+      entity_id: input_text.effekttopp_2_tid
+  - action: input_text.set_value
+    metadata: {}
+    data:
+      value: '{{ result.datetime3 }}'
+    target:
+      entity_id: input_text.effekttopp_3_tid
+  - action: input_number.set_value
+    metadata: {}
+    data:
+      value: '{{ result.mean }}'
+    target:
+      entity_id: input_number.effekttoppar_medel
+  - action: input_number.set_value
+    metadata: {}
+    data:
+      value: '{{ states(''sensor.ell5_253941669_ell5_253941669_energy_active_positive'')
+        | float }}'
+    target:
+      entity_id: input_number.effekt_forra_timmen
+  mode: single
+- id: '1764687308538'
+  alias: Turn on/off trigger for compare power peaks
+  description: ''
+  triggers:
+  - trigger: time
+    at: 07:00:00
+    weekday:
+    - fri
+    - thu
+    - wed
+    - tue
+    - mon
+    id: 'On'
+  - trigger: time
+    at: '21:00:00'
+    weekday:
+    - fri
+    - thu
+    - wed
+    - tue
+    - mon
+    id: 'Off'
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - 'On'
+      sequence:
+      - action: input_number.set_value
+        metadata: {}
+        data:
+          value: '{{ states(''sensor.ell5_253941669_ell5_253941669_energy_active_positive'')
+            | float }}'
+        target:
+          entity_id: input_number.effekt_forra_timmen
+      - action: automation.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: automation.trigger_compare_power_peaks
+    - conditions:
+      - condition: trigger
+        id:
+        - 'Off'
+      sequence:
+      - action: automation.turn_off
+        metadata: {}
+        data:
+          stop_actions: true
+        target:
+          entity_id: automation.trigger_compare_power_peaks
+  mode: single
+- id: '1764714650640'
+  alias: Power peaks reset values
+  description: Reset all values at the beginning of Nov - Mar
+  triggers:
+  - trigger: calendar
+    entity_id: calendar.power_peaks_reset
+    event: start
+    offset: 0:0:0
+  conditions: []
+  actions:
+  - action: input_number.set_value
+    metadata: {}
+    data:
+      value: 0
+    target:
+      entity_id:
+      - input_number.effekttopp_1
+      - input_number.effekttopp_2
+      - input_number.effekttopp_3
+      - input_number.effekttoppar_medel
+  - action: input_text.set_value
+    metadata: {}
+    data:
+      value: '-'
+    target:
+      entity_id:
+      - input_text.effekttopp_1_tid
+      - input_text.effekttopp_2_tid
+      - input_text.effekttopp_3_tid
+  mode: single
