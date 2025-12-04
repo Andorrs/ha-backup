@@ -202,13 +202,13 @@ compare_power_peaks:
       %} {% if power_hour > ns.peak1 %}\n  {% set ns.peak3 = ns.peak2 %}\n  {% set
       ns.peak2 = ns.peak1 %}\n  {% set ns.peak1 = power_hour %}\n  {% set ns.datetime3
       = ns.datetime2 %}\n  {% set ns.datetime2 = ns.datetime1 %}\n  {% set ns.datetime1
-      = (now().strftime(\"%d/%m\") + ' ' + (now()|as_timestamp - (60*60))|timestamp_custom(\"%H\",
+      = (now().strftime(\"%-d/%m\") + ' ' + (now()|as_timestamp - (60*60))|timestamp_custom(\"%H\",
       True) + '-' + now().strftime(\"%H\")) %}\n{% elif power_hour > ns.peak2 %}\n
       \ {% set ns.peak3 = ns.peak2 %}\n  {% set ns.peak2 = power_hour %}\n  {% set
-      ns.datetime3 = ns.datetime2 %}\n  {% set ns.datetime2 = (now().strftime(\"%d/%m\")
+      ns.datetime3 = ns.datetime2 %}\n  {% set ns.datetime2 = (now().strftime(\"%-d/%m\")
       + ' ' + (now()|as_timestamp - (60*60))|timestamp_custom(\"%H\", True) + '-'
       + now().strftime(\"%H\")) %}\n{% elif power_hour > ns.peak3 %}\n  {% set ns.peak3
-      = power_hour %}\n  {% set ns.datetime3 = (now().strftime(\"%d/%m\") + ' ' +
+      = power_hour %}\n  {% set ns.datetime3 = (now().strftime(\"%-d/%m\") + ' ' +
       (now()|as_timestamp - (60*60))|timestamp_custom(\"%H\", True) + '-' + now().strftime(\"%H\"))
       %}\n{% endif %} {% set ns.mean = ((ns.peak1 + ns.peak2 + ns.peak3)/3) | round(2)
       %} {{ {'peak1':ns.peak1, 'peak2':ns.peak2, 'peak3':ns.peak3, 'datetime1':ns.datetime1,
@@ -218,3 +218,18 @@ compare_power_peaks:
   - stop: End
     response_variable: effekt_toppar
   description: ''
+power_peaks_flex_card_input:
+  alias: Power peaks flex card input
+  description: ''
+  variables:
+    values: "{% set response = { \"peaks\" : [\n    {\n      \"name\" : \"1\",\n      \"value\"
+      : states('input_number.effekttopp_1'),\n      \"time\" : states('input_text.effekttopp_1_tid')\n
+      \   },\n    {\n      \"name\" : \"2\",\n      \"value\" : states('input_number.effekttopp_2'),\n
+      \     \"time\" : states('input_text.effekttopp_2_tid')\n    },\n    {\n      \"name\"
+      : \"3\",\n      \"value\" : states('input_number.effekttopp_3'),\n      \"time\"
+      : states('input_text.effekttopp_3_tid')\n    },\n    {\n      \"name\" : \"Medel\",\n
+      \     \"value\" : states('input_number.effekttoppar_medel'),\n      \"time\"
+      : \"\"\n    }\n  ] }\n  %}\n  {{ response }}\n"
+  sequence:
+  - stop: End
+    response_variable: values
