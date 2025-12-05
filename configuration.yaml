@@ -20,87 +20,126 @@ scene: !include scenes.yaml
 mqtt: !include mqtt.yaml
 
 # Added sensors
+rest:
+  - resource: https://karnkraft.vattenfall.se/ringhals/produktion/
+    scan_interval: 1800
+    sensor:
+      - name: "Ringhals TEST"
+        value_template: >
+          {{ value | regex_findall("production.:\s(\d+.\d+)", ignorecase=true) }}
+      - name: Ringhals Power
+        value_template: >
+          {{ value | regex_findall("production.:\s(\d+.\d+)", ignorecase=true) }}
+      - name: Ringhals Percent
+        value_template: >
+          {{ value | regex_findall("percent.:\s(\d+.\d+)", ignorecase=true) }}
+  - resource: https://karnkraft.vattenfall.se/forsmark/produktion/
+    scan_interval: 1800
+    sensor:
+      - name: Forsmark Power
+        value_template: >
+          {{ value | regex_findall("production.:\s(\d+.\d+)", ignorecase=true) }}
+      - name: Forsmark Percent
+        value_template: >
+          {{ value | regex_findall("percent.:\s(\d+.\d+)", ignorecase=true) }}
+  - resource: https://www.okg.se/.netlify/functions/getReactorOutput
+    scan_interval: 1800
+    sensor:
+      - name: OKG Effekt
+        unit_of_measurement: MW
+        value_template: "{{ value_json.value }}"
+
+template:
+  - sensor:
+      - unit_of_measurement: MW
+        default_entity_id: sensor.ringhals3_effekt
+        name: Ringhals 3 Effekt
+        state: '{{ states(''sensor.ringhals_power'').split('','')[0] | regex_findall_index("(\d+)") }}'
+  - sensor:
+      - unit_of_measurement: "%"
+        default_entity_id: sensor.ringhals3_procent
+        name: Ringhals 3 Procent
+        state: '{{ states(''sensor.ringhals_percent'').split('','')[0] | regex_findall_index("(\d+.\d+)") }}'
+  - sensor:
+      - unit_of_measurement: MW
+        default_entity_id: sensor.ringhals4_effekt
+        name: Ringhals 4 Effekt
+        state: '{{ states(''sensor.ringhals_power'').split('','')[1] | regex_findall_index("(\d+)") }}'
+  - sensor:
+      - unit_of_measurement: "%"
+        default_entity_id: sensor.ringhals4_procent
+        name: Ringhals 4 Procent
+        state: '{{ states(''sensor.ringhals_percent'').split('','')[1] | regex_findall_index("(\d+.\d+)") }}'
+  - sensor:
+      - unit_of_measurement: MW
+        default_entity_id: sensor.forsmark1_effekt
+        name: Forsmark 1 Effekt
+        state: '{{ states(''sensor.forsmark_power'').split('','')[0] | regex_findall_index("(\d+)") }}'
+  - sensor:
+      - unit_of_measurement: "%"
+        default_entity_id: sensor.forsmark1_procent
+        name: Forsmark 1 Procent
+        state: '{{ states(''sensor.forsmark_percent'').split('','')[0] | regex_findall_index("(\d+.\d+)") }}'
+  - sensor:
+      - unit_of_measurement: MW
+        default_entity_id: sensor.forsmark2_effekt
+        name: Forsmark 2 Effekt
+        state: '{{ states(''sensor.forsmark_power'').split('','')[1] | regex_findall_index("(\d+)") }}'
+  - sensor:
+      - unit_of_measurement: "%"
+        default_entity_id: sensor.forsmark2_procent
+        name: Forsmark 2 Procent
+        state: '{{ states(''sensor.forsmark_percent'').split('','')[1] | regex_findall_index("(\d+.\d+)") }}'
+  - sensor:
+      - unit_of_measurement: MW
+        default_entity_id: sensor.forsmark3_effekt
+        name: Forsmark 3 Effekt
+        state: '{{ states(''sensor.forsmark_power'').split('','')[2] | regex_findall_index("(\d+)") }}'
+  - sensor:
+      - unit_of_measurement: "%"
+        default_entity_id: sensor.forsmark3_procent
+        name: Forsmark 3 Procent
+        state: '{{ states(''sensor.forsmark_percent'').split('','')[2] | regex_findall_index("(\d+.\d+)") }}'
+  - sensor:
+      - unit_of_measurement: "%"
+        name: OKG Procent
+        state: "{{ (states('sensor.okg_effekt')|int) / 1450 * 100 }}"
+  - sensor:
+      - unit_of_measurement: W
+        #default_entity_id: sensor.wallconnector_power
+        name: Wall Connector Power Test
+        device_class: power
+        state:
+          "{% set a_current = states('sensor.tesla_wall_connector_phase_a_current')
+          | float %} {% set b_current = states('sensor.tesla_wall_connector_phase_b_current')
+          | float %} {% set c_current = states('sensor.tesla_wall_connector_phase_c_current')
+          | float %} {% set a_voltage = states('sensor.tesla_wall_connector_phase_a_voltage')
+          | float %} {% set b_voltage = states('sensor.tesla_wall_connector_phase_b_voltage')
+          | float %} {% set c_voltage = states('sensor.tesla_wall_connector_phase_c_voltage')
+          | float %} {{ (a_current * a_voltage) + (b_current * b_voltage) + (c_current
+          * c_voltage) }}"
+  - sensor:
+      - unit_of_measurement: "SEK/kWh"
+        name: Totalt elpris TEST
+        icon: mdi:currency-eur
+        state: >
+          {% set days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] %}
+          {% set monthly_usage = [2218, 2007, 1662, 1662, 1294, 1172, 1314, 942, 1096, 1591, 1966, 2102] %}
+          {% set i = now().month - 1 %}
+          {% set spotpris = states('sensor.nordpool_kwh_se4_sek_2_10_0') | float %}
+          {% set days_in_year = states('input_number.days_in_year') | float %}
+          {% set elbolag_avgifter = 18.10 * 0.8 | float %}
+          {% set elbolag_arsavgift = 58800 %}
+          {% set elbolag_fast_avgift = (elbolag_arsavgift * 0.8 / days_in_year * days_in_month[i] / monthly_usage[i]) | float %}
+          {% set elnat_arsavgift = 684400 | int %}
+          {% set elnat_fast_avgift = (elnat_arsavgift / days_in_year * days_in_month[i] / monthly_usage[i]) | float %}
+          {% set elnat_overforing = 17.36 | float %}
+          {% set elnat_energiskatt = 42.80 | float %}
+          {{ ((spotpris + elbolag_fast_avgift + elbolag_avgifter + elnat_fast_avgift + elnat_overforing + elnat_energiskatt) * 1.25 / 100) | round(2) }}
+
 sensor:
-  - platform: rest
-    resource: https://karnkraft.vattenfall.se/ringhals/produktion/
-    method: GET
-    scan_interval: 1800
-    name: Ringhals Power
-    value_template: >
-      {{ value | regex_findall_index("blockProductionDataList.*production.:(\d+.\d+).*percent.:(\d+.\d+).*production.:(\d+.\d+).*percent.:(\d+.\d+)", ignorecase=true) }}
   - platform: template
     sensors:
-      ringhals3_effekt:
-        friendly_name: Ringhals 3 Effekt
-        unit_of_measurement: MW
-        value_template: >
-          {{ states('sensor.ringhals_power').split(',')[0] | regex_findall_index("(\d+)") }}
-      ringhals3_procent:
-        friendly_name: Ringhals 3 Procent
-        unit_of_measurement: "%"
-        value_template: >
-          {{ states('sensor.ringhals_power').split(',')[1] | regex_findall_index("(\d+.\d+)") }}
-      ringhals4_effekt:
-        friendly_name: Ringhals 4 Effekt
-        unit_of_measurement: MW
-        value_template: >
-          {{ states('sensor.ringhals_power').split(',')[2] | regex_findall_index("(\d+)") }}
-      ringhals4_procent:
-        friendly_name: Ringhals 4 Procent
-        unit_of_measurement: "%"
-        value_template: >
-          {{ states('sensor.ringhals_power').split(',')[3] | regex_findall_index("(\d+.\d+)") }}
-  - platform: rest
-    resource: https://karnkraft.vattenfall.se/forsmark/produktion/
-    method: GET
-    scan_interval: 1800
-    name: Forsmark Power
-    value_template: >
-      {{ value | regex_findall_index("blockProductionDataList.*production.:(\d+.\d+).*percent.:(\d+.\d+).*production.:(\d+.\d+).*percent.:(\d+.\d+).*production.:(\d+.\d+).*percent.:(\d+.\d+)", ignorecase=true) }}
-  - platform: template
-    sensors:
-      forsmark1_effekt:
-        friendly_name: Forsmark 1 Effekt
-        unit_of_measurement: MW
-        value_template: >
-          {{ states('sensor.forsmark_power').split(',')[0] | regex_findall_index("(\d+.\d)") | round(0) }}
-      forsmark1_procent:
-        friendly_name: Forsmark 1 Procent
-        unit_of_measurement: "%"
-        value_template: >
-          {{ states('sensor.forsmark_power').split(',')[1] | regex_findall_index("(\d+.\d+)") }}
-      forsmark2_effekt:
-        friendly_name: Forsmark 2 Effekt
-        unit_of_measurement: MW
-        value_template: >
-          {{ states('sensor.forsmark_power').split(',')[2] | regex_findall_index("(\d+.\d)") | round(0) }}
-      forsmark2_procent:
-        friendly_name: Forsmark 2 Procent
-        unit_of_measurement: "%"
-        value_template: >
-          {{ states('sensor.forsmark_power').split(',')[3] | regex_findall_index("(\d+.\d+)") }}
-      forsmark3_effekt:
-        friendly_name: Forsmark 3 Effekt
-        unit_of_measurement: MW
-        value_template: >
-          {{ states('sensor.forsmark_power').split(',')[4] | regex_findall_index("(\d+.\d)") | round(0) }}
-      forsmark3_procent:
-        friendly_name: Forsmark 3 Procent
-        unit_of_measurement: "%"
-        value_template: >
-          {{ states('sensor.forsmark_power').split(',')[5] | regex_findall_index("(\d+.\d+)") }}
-  - platform: rest
-    resource: https://www.okg.se/.netlify/functions/getReactorOutput
-    name: OKG Effekt
-    scan_interval: 1800
-    value_template: "{{ value_json.value }}"
-    unit_of_measurement: MW
-  - platform: template
-    sensors:
-      okg_procent:
-        friendly_name: OKG Procent
-        value_template: "{{ (states('sensor.okg_effekt')|int) / 1450 * 100 }}"
-        unit_of_measurement: "%"
       wallconnector_power:
         friendly_name: Wall Connector Power
         unit_of_measurement: "W"
@@ -263,73 +302,9 @@ sensor:
         friendly_name: "Day of the week"
         value_template: "{{ now().weekday() + 1 }}"
 
-########### iGRILL ALERT SENSORS ############
-template:
-  - sensor:
-      - name: "igrill_alert_temp"
-        state: >-
-          {% if (states.sensor.igrill_70918f1acee4_probe_4.state | int) < (states.input_number.igrill_alert_low.state | int) or (states.sensor.igrill_70918f1acee4_probe_4.state | int)  > (states.input_number.igrill_alert_high.state | int) %}
-            Alert
-          {% else %}
-            Normal
-          {% endif %}
-  - sensor:
-      - name: "target_alert_temp_probe_1"
-        state: >-
-          {% if (states.sensor.igrill_70918f1acee4_probe_1.state | int) >= (states.input_number.igrill_probe_1_target.state | int) %}
-            Alert
-          {% else %}
-            Normal
-          {% endif %}
-  - sensor:
-      - name: "target_alert_temp_probe_2"
-        state: >-
-          {% if (states.sensor.igrill_70918f1acee4_probe_2.state | int) >= (states.input_number.igrill_probe_2_target.state | int) %}
-            Alert
-          {% else %}
-            Normal
-          {% endif %}
-  - sensor:
-      - name: "almost_target_alert_temp_probe_1"
-        state: >-
-          {% if (states.sensor.igrill_70918f1acee4_probe_1.state | int) >= (((states.input_number.igrill_probe_1_target.state | int) - 5) | int) %}
-            Alert
-          {% else %}
-            Normal
-          {% endif %}
-  - sensor:
-      - name: "almost_target_alert_temp_probe_2"
-        state: >-
-          {% if (states.sensor.igrill_70918f1acee4_probe_2.state | int) >= (((states.input_number.igrill_probe_2_target.state | int) - 5) | int) %}
-            Alert
-          {% else %}
-            Normal
-          {% endif %}
-
-rest:
-  - resource: https://www.smhi.se/wpt-a/backend_observation/metobs/station/number/52350
-    scan_interval: 3600
-    sensor:
-      - name: "SMHI Observation Malmö Temp"
-        unit_of_measurement: "°C"
-        value_template: '{{ value_json["values"]["t"]["values"][24].value | float }}'
-      - name: "SMHI Observation Malmö Vind"
-        unit_of_measurement: "m/s"
-        value_template: '{{ value_json["values"]["ws"]["values"][24].value | float }}'
-      - name: "SMHI Observation Malmö Byvind"
-        unit_of_measurement: "mm"
-        value_template: '{{ value_json["values"]["gust"]["values"][24].value | float }}'
-      - name: "SMHI Observation Malmö Nederbörd"
-        unit_of_measurement: "mm"
-        value_template: '{{ value_json["values"]["p"]["values"][24].value | float }}'
-      - name: "SMHI Observation Malmö Luftfuktighet"
-        unit_of_measurement: "%"
-        value_template: '{{ value_json["values"]["r"]["values"][24].value | float }}'
-
 logbook:
   exclude:
     entities:
-      - sensor.time_until_jack
       - media_player.65oled707_12
 
 logger:
