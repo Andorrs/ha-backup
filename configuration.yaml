@@ -106,8 +106,8 @@ template:
         state: "{{ (states('sensor.okg_effekt')|int) / 1450 * 100 }}"
   - sensor:
       - unit_of_measurement: W
-        #default_entity_id: sensor.wallconnector_power
-        name: Wall Connector Power Test
+        default_entity_id: sensor.wallconnector_power
+        name: Wall Connector Power
         device_class: power
         state:
           "{% set a_current = states('sensor.tesla_wall_connector_phase_a_current')
@@ -119,14 +119,50 @@ template:
           | float %} {{ (a_current * a_voltage) + (b_current * b_voltage) + (c_current
           * c_voltage) }}"
   - sensor:
+      - name: Nordpool SE4 spotpris 15min
+        unit_of_measurement: "Öre/kWh"
+        icon: mdi:currency-eur
+        state: >
+          {% set data = state_attr('sensor.nordpool_kwh_se4_sek_2_10_0', 'raw_today') or [] %}
+          {% set nowts = as_timestamp(now()) %}
+          {% set current = namespace(val=None) %}
+          {% for p in data %}
+            {% set s = as_timestamp(as_datetime(p.start)) %}
+            {% set e = as_timestamp(as_datetime(p.end)) %}
+            {% if nowts >= s and nowts < e %}
+              {% set current.val = p.value %}
+            {% endif %}
+          {% endfor %}
+          {{ current.val if current.val is not none else 'unknown' }}
+  - sensor:
+      - name: Nordpool SE3 spotpris 15min
+        unit_of_measurement: "Öre/kWh"
+        icon: mdi:currency-eur
+        state: >
+          {% if states('sensor.nordpool_kwh_se3_sek_2_10_0') == 'unknown' %}
+            {{ states('sensor.nordpool_se4_spotpris_15min') }}
+          {% else %}
+            {% set data = state_attr('sensor.nordpool_kwh_se3_sek_2_10_0', 'raw_today') or [] %}
+            {% set nowts = as_timestamp(now()) %}
+            {% set current = namespace(val=None) %}
+            {% for p in data %}
+              {% set s = as_timestamp(as_datetime(p.start)) %}
+              {% set e = as_timestamp(as_datetime(p.end)) %}
+              {% if nowts >= s and nowts < e %}
+                {% set current.val = p.value %}
+              {% endif %}
+            {% endfor %}
+            {{ current.val if current.val is not none else 'unknown' }}
+          {% endif %}
+  - sensor:
       - unit_of_measurement: "SEK/kWh"
-        name: Totalt elpris TEST
+        name: Totalt elpris
         icon: mdi:currency-eur
         state: >
           {% set days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] %}
-          {% set monthly_usage = [2218, 2007, 1662, 1662, 1294, 1172, 1314, 942, 1096, 1591, 1966, 2102] %}
+          {% set monthly_usage = [2075, 1591, 2011, 1541, 1457, 1144, 1152, 1033, 1020, 1667, 1966, 1845] %}
           {% set i = now().month - 1 %}
-          {% set spotpris = states('sensor.nordpool_kwh_se4_sek_2_10_0') | float %}
+          {% set spotpris = states('sensor.nordpool_se4_spotpris_15min') | float %}
           {% set days_in_year = states('input_number.days_in_year') | float %}
           {% set elbolag_avgifter = 18.10 * 0.8 | float %}
           {% set elbolag_arsavgift = 58800 %}
@@ -136,49 +172,15 @@ template:
           {% set elnat_overforing = 17.36 | float %}
           {% set elnat_energiskatt = 42.80 | float %}
           {{ ((spotpris + elbolag_fast_avgift + elbolag_avgifter + elnat_fast_avgift + elnat_overforing + elnat_energiskatt) * 1.25 / 100) | round(2) }}
-
-sensor:
-  - platform: template
-    sensors:
-      wallconnector_power:
-        friendly_name: Wall Connector Power
-        unit_of_measurement: "W"
-        device_class: "power"
-        value_template: >
-          {% set a_current = states('sensor.tesla_wall_connector_phase_a_current') | float %}
-          {% set b_current = states('sensor.tesla_wall_connector_phase_b_current') | float %}
-          {% set c_current = states('sensor.tesla_wall_connector_phase_c_current') | float %}
-          {% set a_voltage = states('sensor.tesla_wall_connector_phase_a_voltage') | float %}
-          {% set b_voltage = states('sensor.tesla_wall_connector_phase_b_voltage') | float %}
-          {% set c_voltage = states('sensor.tesla_wall_connector_phase_c_voltage') | float %}
-          {{ (a_current * a_voltage) + (b_current * b_voltage) + (c_current * c_voltage) }}
-      totalt_elpris:
-        friendly_name: Totalt elpris
-        unit_of_measurement: "SEK/kWh"
-        icon_template: "mdi:currency-eur"
-        value_template: >
+  - sensor:
+      - unit_of_measurement: "SEK/kWh"
+        name: Totalt elpris SE3
+        icon: mdi:currency-eur
+        state: >
           {% set days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] %}
-          {% set monthly_usage = [2218, 2007, 1662, 1662, 1294, 1172, 1314, 942, 1096, 1591, 1966, 2102] %}
+          {% set monthly_usage = [2075, 1591, 2011, 1541, 1457, 1144, 1152, 1033, 1020, 1667, 1966, 1845] %}
           {% set i = now().month - 1 %}
-          {% set spotpris = states('sensor.nordpool_kwh_se4_sek_2_10_0') | float %}
-          {% set days_in_year = states('input_number.days_in_year') | float %}
-          {% set elbolag_avgifter = 18.10 * 0.8 | float %}
-          {% set elbolag_arsavgift = 58800 %}
-          {% set elbolag_fast_avgift = (elbolag_arsavgift * 0.8 / days_in_year * days_in_month[i] / monthly_usage[i]) | float %}
-          {% set elnat_arsavgift = 684400 | int %}
-          {% set elnat_fast_avgift = (elnat_arsavgift / days_in_year * days_in_month[i] / monthly_usage[i]) | float %}
-          {% set elnat_overforing = 17.36 | float %}
-          {% set elnat_energiskatt = 42.80 | float %}
-          {{ ((spotpris + elbolag_fast_avgift + elbolag_avgifter + elnat_fast_avgift + elnat_overforing + elnat_energiskatt) * 1.25 / 100) | round(2) }}
-      totalt_elpris_se3:
-        friendly_name: Totalt elpris SE3
-        unit_of_measurement: "SEK/kWh"
-        icon_template: "mdi:currency-eur"
-        value_template: >
-          {% set days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] %}
-          {% set monthly_usage = [2218, 2007, 1662, 1662, 1294, 1172, 1314, 942, 1096, 1591, 1966, 2102] %}
-          {% set i = now().month - 1 %}
-          {% set spotpris = states('sensor.nordpool_kwh_se3_sek_2_10_0') | float %}
+          {% set spotpris = states('sensor.nordpool_se3_spotpris_15min') | float %}
           {% set days_in_year = states('input_number.days_in_year') | float %}
           {% set elbolag_avgifter = 18.10 * 0.8 | float %}
           {% set elbolag_manadsavgift = 6900 %}
@@ -188,72 +190,77 @@ sensor:
           {% set elnat_overforing = 27.20 | float %}
           {% set elnat_energiskatt = 42.80 | float %}
           {{ ((spotpris + elbolag_fast_avgift + elbolag_avgifter + elnat_fast_avgift + elnat_overforing + elnat_energiskatt) * 1.25 / 100) | round(2) }}
-      wallconnector_power_cost:
-        friendly_name: "Wallconnector kostnad momentan"
-        unit_of_measurement: "SEK"
-        icon_template: "mdi:currency-eur"
-        value_template: >
+  - sensor:
+      - unit_of_measurement: "SEK"
+        default_entity_id: sensor.wallconnector_power_cost
+        name: Wallconnector kostnad momentan
+        icon: "mdi:currency-eur"
+        state: >
           {% set power = states('sensor.wallconnector_power') | float %}
           {% set cost = states('sensor.totalt_elpris') | float %}
           {{ power * cost / 1000 }}
-      wallconnector_power_alex_o_elin:
-        friendly_name: "Wallconnector power Alex o Elin"
-        unit_of_measurement: "W"
+  - sensor:
+      - unit_of_measurement: "W"
+        default_entity_id: sensor.ellie_power_at_blavinge
+        name: Ellie power at Blåvinge
         device_class: "power"
-        value_template: >
-          {% if is_state('input_select.car_connected_to_charger', 'Sälen') %}
+        state: >
+          {% if is_state('input_select.car_connected_to_charger', 'Ellie') %}
           {{ states('sensor.wallconnector_power') }}
           {% else %}
           {{ 0.0 }}
           {% endif %}
-      wallconnector_power_lennart_o_suzanne:
-        friendly_name: "Wallconnector power Lennart o Suzanne"
+  - sensor:
+      - default_entity_id: ellie_power_at_herrgarden # NOT WORKING DUE TO NO TESLA INTEGRATION
+        name: Ellie power at Herrgården
         unit_of_measurement: "W"
-        device_class: "power"
-        value_template: >
-          {% if is_state('input_select.car_connected_to_charger', 'Lennart') %}
-          {{ states('sensor.wallconnector_power') }}
-          {% else %}
-          {{ 0.0 }}
-          {% endif %}
-      wallconnector_power_cost_alex_o_elin:
-        friendly_name: "Wallconnector kostnad momentan Alex o Elin"
-        unit_of_measurement: "SEK"
-        icon_template: "mdi:currency-eur"
-        value_template: >
-          {% set power = states('sensor.wallconnector_power') | float %}
-          {% set cost = states('sensor.totalt_elpris') | float %}
-          {% if is_state('input_select.car_connected_to_charger', 'Sälen') %}
-          {{ power * cost / 1000 }}
-          {% else %}
-          {{ 0.0 }}
-          {% endif %}
-      wallconnector_power_cost_lennart_o_suzanne:
-        friendly_name: "Wallconnector kostnad momentan Lennart o Suzanne"
-        unit_of_measurement: "SEK"
-        icon_template: "mdi:currency-eur"
-        value_template: >
-          {% set power = states('sensor.wallconnector_power') | float %}
-          {% set cost = states('sensor.totalt_elpris') | float %}
-          {% if is_state('input_select.car_connected_to_charger', 'Lennart') %}
-          {{ power * cost / 1000 }}
-          {% else %}
-          {{ 0.0 }}
-          {% endif %}
-      ellie_power_at_herrgarden:
-        friendly_name: "Ellie power at Herrgården"
-        unit_of_measurement: "W"
-        value_template: >
+        state: >
           {% if is_state('device_tracker.ellie_location_tracker', 'lilla_herrgarden') %}
           {{ states('sensor.ellie_charger_power') | float * 1000 }}
           {% else %}
           {{ 0.0 }}
           {% endif %}
-      ellie_power_cost_at_herrgarden:
-        friendly_name: "Ellie power cost at Herrgården"
+  - sensor:
+      - unit_of_measurement: "W"
+        default_entity_id: sensor.wallconnector_power_alex_o_elin
+        name: Wallconnector power Alex o Elin
+        device_class: "power"
+        state: >
+          {% if is_state('input_select.car_connected_to_charger', 'Sälen') %}
+          {{ states('sensor.wallconnector_power') }}
+          {% else %}
+          {{ 0.0 }}
+          {% endif %}
+  - sensor:
+      - unit_of_measurement: "W"
+        default_entity_id: sensor.wallconnector_power_lennart_o_suzanne
+        name: Wallconnector power Lennart o Suzanne
+        device_class: "power"
+        state: >
+          {% if is_state('input_select.car_connected_to_charger', 'Lennart') %}
+          {{ states('sensor.wallconnector_power') }}
+          {% else %}
+          {{ 0.0 }}
+          {% endif %}
+  - sensor:
+      - unit_of_measurement: "SEK"
+        default_entity_id: sensor.ellie_power_cost_at_blavinge
+        name: Ellie power cost at Blåvinge
+        icon: mdi:currency-eur
+        state: >
+          {% set power = states('sensor.wallconnector_power') | float %}
+          {% set cost = states('sensor.totalt_elpris') | float %}
+          {% if is_state('input_select.car_connected_to_charger', 'Ellie') %}
+          {{ power * cost / 1000 }}
+          {% else %}
+          {{ 0.0 }}
+          {% endif %}
+  - sensor:
+      - default_entity_id: sensor.ellie_power_cost_at_herrgarden
+        name: Ellie power cost at Herrgården
         unit_of_measurement: "SEK"
-        icon_template: "mdi:currency-eur"
-        value_template: >
+        icon: "mdi:currency-eur"
+        state: >
           {% set power = states('sensor.ellie_power_at_herrgarden') | float %}
           {% set cost = states('sensor.totalt_elpris_se3') | float %}
           {% if is_state('device_tracker.ellie_location_tracker', 'lilla_herrgarden') %}
@@ -261,46 +268,54 @@ sensor:
           {% else %}
           {{ 0.0 }}
           {% endif %}
-      ellie_power_at_blavinge:
-        friendly_name: "Ellie power at Blåvinge"
-        unit_of_measurement: "W"
-        value_template: >
-          {% if is_state('input_select.car_connected_to_charger', 'Ellie') %}
-          {{ states('sensor.wallconnector_power') }}
-          {% else %}
-          {{ 0.0 }}
-          {% endif %}
-      ellie_power_cost_at_blavinge:
-        friendly_name: "Ellie power cost at Blåvinge"
-        unit_of_measurement: "SEK"
-        icon_template: "mdi:currency-eur"
-        value_template: >
+  - sensor:
+      - unit_of_measurement: "SEK"
+        default_entity_id: sensor.wallconnector_power_cost_alex_o_elin
+        name: Wallconnector kostnad momentan Alex o Elin
+        icon: mdi:currency-eur
+        state: >
           {% set power = states('sensor.wallconnector_power') | float %}
           {% set cost = states('sensor.totalt_elpris') | float %}
-          {% if is_state('input_select.car_connected_to_charger', 'Ellie') %}
+          {% if is_state('input_select.car_connected_to_charger', 'Sälen') %}
           {{ power * cost / 1000 }}
           {% else %}
           {{ 0.0 }}
           {% endif %}
-      outdoor_latest_real_temperature:
-        friendly_name: "Senaste riktiga yttertemperaturen"
+  - sensor:
+      - unit_of_measurement: "SEK"
+        default_entity_id: sensor.wallconnector_power_cost_lennart_o_suzanne
+        name: Wallconnector kostnad momentan Lennart o Suzanne
+        icon: mdi:currency-eur
+        state: >
+          {% set power = states('sensor.wallconnector_power') | float %}
+          {% set cost = states('sensor.totalt_elpris') | float %}
+          {% if is_state('input_select.car_connected_to_charger', 'Lennart') %}
+          {{ power * cost / 1000 }}
+          {% else %}
+          {{ 0.0 }}
+          {% endif %}
+  - sensor:
+      - default_entity_id: sensor.outdoor_latest_real_temperature
+        name: Senaste riktiga yttertemperaturen
         unit_of_measurement: "°C"
-        value_template: >
+        state: >
           {% if states('sensor.tesla_wall_connector_handle_temperature') | float() < 40.0 %}
           {{ states('sensor.tesla_wall_connector_handle_temperature') }}
           {% endif %}
-      outdoor_temperature:
-        friendly_name: "Yttertemperatur"
+  - sensor:
+      - default_entity_id: sensor.outdoor_temperature
+        name: Yttertemperatur
         unit_of_measurement: "°C"
-        value_template: >
+        state: >
           {% if states('sensor.tesla_wall_connector_handle_temperature') | float() < 40.0 %}
           {{ states('sensor.tesla_wall_connector_handle_temperature') }}
           {% else %}
-          {{ states('sensor.outdoor_latest_temperature') }}
+          {{ states('sensor.outdoor_latest_real_temperature') }}
           {% endif %}
-      day_of_the_week:
-        friendly_name: "Day of the week"
-        value_template: "{{ now().weekday() + 1 }}"
+  - sensor:
+      - default_entity_id: sensor.day_of_the_week
+        name: Day of the week
+        state: "{{ now().weekday() + 1 }}"
 
 logbook:
   exclude:

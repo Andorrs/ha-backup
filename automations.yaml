@@ -573,7 +573,7 @@
   - data:
       cache: false
       entity_id: media_player.family_room_speaker
-      message: Glöm inte Veras present och kontanterna.
+      message: Kolla din telefon
     action: tts.google_translate_say
   - data:
       stop_actions: true
