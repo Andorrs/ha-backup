@@ -1306,6 +1306,7 @@
     data:
       message: '{{ states(''input_number.ellie_days_owned'') | int }},{{ states(''sensor.ellie_odometer'')
         | round(1) }}'
+    enabled: false
   mode: single
 - id: '1730480298342'
   alias: Tänd utomhus vid rörelse

@@ -210,16 +210,16 @@ template:
           {% else %}
           {{ 0.0 }}
           {% endif %}
-  - sensor:
-      - default_entity_id: ellie_power_at_herrgarden # NOT WORKING DUE TO NO TESLA INTEGRATION
-        name: Ellie power at Herrgården
-        unit_of_measurement: "W"
-        state: >
-          {% if is_state('device_tracker.ellie_location_tracker', 'lilla_herrgarden') %}
-          {{ states('sensor.ellie_charger_power') | float * 1000 }}
-          {% else %}
-          {{ 0.0 }}
-          {% endif %}
+  #  - sensor:
+  #      - default_entity_id: ellie_power_at_herrgarden # NOT WORKING DUE TO NO TESLA INTEGRATION
+  #        name: Ellie power at Herrgården
+  #        unit_of_measurement: "W"
+  #        state: >
+  #          {% if is_state('device_tracker.ellie_location_tracker', 'lilla_herrgarden') %}
+  #          {{ states('sensor.ellie_charger_power') | float * 1000 }}
+  #          {% else %}
+  #          {{ 0.0 }}
+  #          {% endif %}
   - sensor:
       - unit_of_measurement: "W"
         default_entity_id: sensor.wallconnector_power_alex_o_elin
@@ -255,19 +255,19 @@ template:
           {% else %}
           {{ 0.0 }}
           {% endif %}
-  - sensor:
-      - default_entity_id: sensor.ellie_power_cost_at_herrgarden
-        name: Ellie power cost at Herrgården
-        unit_of_measurement: "SEK"
-        icon: "mdi:currency-eur"
-        state: >
-          {% set power = states('sensor.ellie_power_at_herrgarden') | float %}
-          {% set cost = states('sensor.totalt_elpris_se3') | float %}
-          {% if is_state('device_tracker.ellie_location_tracker', 'lilla_herrgarden') %}
-          {{ power * cost / 1000 }}
-          {% else %}
-          {{ 0.0 }}
-          {% endif %}
+  #  - sensor:
+  #      - default_entity_id: sensor.ellie_power_cost_at_herrgarden
+  #        name: Ellie power cost at Herrgården
+  #        unit_of_measurement: "SEK"
+  #        icon: "mdi:currency-eur"
+  #        state: >
+  #          {% set power = states('sensor.ellie_power_at_herrgarden') | float %}
+  #          {% set cost = states('sensor.totalt_elpris_se3') | float %}
+  #          {% if is_state('device_tracker.ellie_location_tracker', 'lilla_herrgarden') %}
+  #          {{ power * cost / 1000 }}
+  #          {% else %}
+  #          {{ 0.0 }}
+  #          {% endif %}
   - sensor:
       - unit_of_measurement: "SEK"
         default_entity_id: sensor.wallconnector_power_cost_alex_o_elin
