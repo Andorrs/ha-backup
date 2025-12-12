@@ -24,9 +24,6 @@ rest:
   - resource: https://karnkraft.vattenfall.se/ringhals/produktion/
     scan_interval: 1800
     sensor:
-      - name: "Ringhals TEST"
-        value_template: >
-          {{ value | regex_findall("production.:\s(\d+.\d+)", ignorecase=true) }}
       - name: Ringhals Power
         value_template: >
           {{ value | regex_findall("production.:\s(\d+.\d+)", ignorecase=true) }}
