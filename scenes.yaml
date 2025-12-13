@@ -322,6 +322,9 @@
     switch.isaks_fonster:
       friendly_name: Isaks lampa
       state: 'on'
+    switch.tv_bank_2:
+      friendly_name: TV-bänk 2
+      state: 'on'
   metadata: {}
 - id: '1729981902349'
   name: Lampor nedanvåning släckta
