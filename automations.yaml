@@ -1743,3 +1743,79 @@
       - input_text.effekttopp_2_tid
       - input_text.effekttopp_3_tid
   mode: single
+- id: '1765896067098'
+  alias: Kaffekokare öka antal bryggningar
+  description: ''
+  triggers:
+  - type: power
+    device_id: d4fedbf04872ede373d250a4499f3143
+    entity_id: b6e1cdf6d4f34a4402e7e20bdd40c2ca
+    domain: sensor
+    trigger: device
+    above: 500
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 30
+  conditions: []
+  actions:
+  - action: input_number.increment
+    metadata: {}
+    target:
+      entity_id: input_number.antal_bryggningar_sen_avkalkning
+    data: {}
+  - action: automation.turn_on
+    metadata: {}
+    target:
+      entity_id: automation.kaffekokare_satt_pa_bryggningsokaren
+    data: {}
+  - action: automation.turn_off
+    metadata: {}
+    target:
+      entity_id: automation.kaffekokare_oka_antal_bryggningar
+    data:
+      stop_actions: true
+  mode: single
+- id: '1765896302777'
+  alias: Kaffekokare sätt på bryggningsökaren
+  description: ''
+  triggers:
+  - type: power
+    device_id: d4fedbf04872ede373d250a4499f3143
+    entity_id: b6e1cdf6d4f34a4402e7e20bdd40c2ca
+    domain: sensor
+    trigger: device
+    below: 500
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 30
+  conditions: []
+  actions:
+  - action: automation.turn_on
+    metadata: {}
+    target:
+      entity_id: automation.kaffekokare_oka_antal_bryggningar
+    data: {}
+  - action: automation.turn_off
+    metadata: {}
+    target:
+      entity_id: automation.kaffekokare_satt_pa_bryggningsokaren
+    data:
+      stop_actions: true
+  mode: single
+- id: '1765917473206'
+  alias: Kaffekokare avisera avkalkning
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - input_number.antal_bryggningar_sen_avkalkning
+    above: 39
+  conditions: []
+  actions:
+  - action: notify.mobile_app_xq_de72
+    metadata: {}
+    data:
+      message: Dags att avkalka kaffekokaren
+  mode: single
