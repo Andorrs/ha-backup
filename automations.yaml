@@ -152,9 +152,9 @@
           - fri
   actions:
   - data: {}
-    target:
-      area_id: kitchen
     action: switch.turn_off
+    target:
+      entity_id: switch.koksfonster
   mode: single
 - id: '1678197834461'
   alias: Ellie lämnar Iconovo
