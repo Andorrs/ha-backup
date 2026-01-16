@@ -133,11 +133,9 @@
         - condition: time
           before: 09:00:00
           weekday:
-          - mon
           - tue
           - wed
           - thu
-          - fri
       - condition: and
         conditions:
         - condition: trigger
