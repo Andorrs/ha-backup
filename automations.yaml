@@ -1096,34 +1096,6 @@
     target:
       entity_id: light.laddlampa_shelly_rgb
   mode: single
-- id: '1730016793262'
-  alias: Tänd utomhus vid solnedgång
-  description: ''
-  triggers:
-  - trigger: sun
-    event: sunset
-    offset: 0
-  conditions: []
-  actions:
-  - action: light.turn_on
-    metadata: {}
-    data: {}
-    target:
-      device_id:
-      - f089d0ffeaaf1489834c8b95c8130769
-      - ceb7496fef7e119164f22d5412d06d9e
-      - 305e807f0f5bbfc7c12fd3f2cfb8c4e4
-      - 3c57a94e5a8a7e4dccadd49957b6faab
-      - 76f3fba7abd2dfb73929ad02d32fe85d
-  - action: mqtt.publish
-    metadata: {}
-    data:
-      evaluate_payload: false
-      qos: '0'
-      retain: false
-      topic: shellies/shellycolorbulb-3494546B669F/color/0/command
-      payload: 'on'
-  mode: single
 - id: '1730026566899'
   alias: Tänd i garaget
   description: ''
@@ -1516,15 +1488,6 @@
     data:
       title: Morgondagens spotpris SE3
       message: Högsta pris {{ result.value }} kl {{ result.time }}
-  mode: single
-- id: '1737846126562'
-  alias: Tänd i garaget på morgonen
-  description: ''
-  triggers:
-  - trigger: time
-    at: 07:01:00
-  conditions: []
-  actions: []
   mode: single
 - id: '1737846204407'
   alias: Tänd i garaget på morgonen
