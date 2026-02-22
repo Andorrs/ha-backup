@@ -764,7 +764,7 @@
     domain: light
   mode: single
 - id: '1727985282363'
-  alias: Slå på elementet i bion under 5 grader
+  alias: Slå på elementet i bion under viss temperatur
   description: ''
   triggers:
   - trigger: numeric_state
