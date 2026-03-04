@@ -313,6 +313,22 @@ template:
       - default_entity_id: sensor.day_of_the_week
         name: Day of the week
         state: "{{ now().weekday() + 1 }}"
+  - sensor:
+      - default_entity_id: sensor.bio_heating_on_off
+        state: >
+          {% set bio_temp = states('sensor.sonoff_temp_bio_temperature') | float %}
+          {% set lower_limit = states('input_number.bio_lower_temp') | float %}
+          {% set upper_limit = states('input_number.bio_upper_temp') | float %}
+          {% set spotpris = states('sensor.nordpool_kwh_se4_sek_2_10_0') %}
+          {% set spotpris_grans = states('input_number.grans_elpris_automatisk_varme_bio') %}
+          {% set switch_state = states('switch.varmeflakt') %}
+          {% set switch_on = switch_state == 'off' and bio_temp < lower_limit %}
+          {% set switch_off = switch_state == 'on' and bio_temp > upper_limit %}
+          {% if spotpris <= spotpris_grans and switch_on and not switch_off  %}
+            On
+          {% else %}
+            Off
+          {% endif %}
 
 logbook:
   exclude:
