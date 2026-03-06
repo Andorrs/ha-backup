@@ -783,6 +783,10 @@
       {% set switch_on = switch_state == ''off'' and bio_temp < lower_limit %}
 
       {{ spotpris <= spotpris_grans and switch_on }}'
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
   conditions: []
   actions:
   - type: turn_on
