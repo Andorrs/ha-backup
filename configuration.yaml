@@ -319,8 +319,8 @@ template:
           {% set bio_temp = states('sensor.sonoff_temp_bio_temperature') | float %}
           {% set lower_limit = states('input_number.bio_lower_temp') | float %}
           {% set upper_limit = states('input_number.bio_upper_temp') | float %}
-          {% set spotpris = states('sensor.nordpool_kwh_se4_sek_2_10_0') %}
-          {% set spotpris_grans = states('input_number.grans_elpris_automatisk_varme_bio') %}
+          {% set spotpris = states('sensor.nordpool_kwh_se4_sek_2_10_0') | float %}
+          {% set spotpris_grans = states('input_number.grans_elpris_automatisk_varme_bio') | float %}
           {% set switch_state = states('switch.varmeflakt') %}
           {% set switch_on = switch_state == 'off' and bio_temp < lower_limit %}
           {% set switch_off = switch_state == 'on' and bio_temp > upper_limit %}

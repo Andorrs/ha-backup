@@ -773,16 +773,12 @@
 
       {% set lower_limit = states(''input_number.bio_lower_temp'') | float %}
 
-      {% set spotpris = states(''sensor.nordpool_kwh_se4_sek_2_10_0'') %}
+      {% set spotpris = states(''sensor.nordpool_kwh_se4_sek_2_10_0'') | float %}
 
       {% set spotpris_grans = states(''input_number.grans_elpris_automatisk_varme_bio'')
-      %}
+      | float %}
 
-      {% set switch_state = states(''switch.varmeflakt'') %}
-
-      {% set switch_on = switch_state == ''off'' and bio_temp < lower_limit %}
-
-      {{ spotpris <= spotpris_grans and switch_on }}'
+      {{ (spotpris <= spotpris_grans) and (bio_temp < lower_limit) }}'
     for:
       hours: 0
       minutes: 1
