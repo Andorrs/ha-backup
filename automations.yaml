@@ -1789,7 +1789,7 @@
   - trigger: numeric_state
     entity_id:
     - input_number.antal_bryggningar_sen_avkalkning
-    above: 39
+    above: 50
   conditions: []
   actions:
   - action: notify.mobile_app_xq_de72
