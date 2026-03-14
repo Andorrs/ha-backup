@@ -817,16 +817,12 @@
 
       {% set upper_limit = states(''input_number.bio_upper_temp'') | float %}
 
-      {% set spotpris = states(''sensor.nordpool_kwh_se4_sek_2_10_0'') %}
+      {% set spotpris = states(''sensor.nordpool_kwh_se4_sek_2_10_0'') | float %}
 
       {% set spotpris_grans = states(''input_number.grans_elpris_automatisk_varme_bio'')
-      %}
+      | float %}
 
-      {% set switch_state = states(''switch.varmeflakt'') %}
-
-      {% set switch_off = switch_state == ''on'' and bio_temp > upper_limit %}
-
-      {{ spotpris > spotpris_grans or switch_off }}'
+      {{ spotpris > spotpris_grans or bio-temp > upper_limit }}'
   conditions: []
   actions:
   - type: turn_off
@@ -1796,4 +1792,38 @@
     metadata: {}
     data:
       message: Dags att avkalka kaffekokaren
+  mode: single
+- id: '1773439462540'
+  alias: Tänd och släck växtlampor
+  description: ''
+  triggers:
+  - trigger: time
+    at: 06:00:00
+    id: 'On'
+  - trigger: time
+    at: '20:00:00'
+    id: 'Off'
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - 'On'
+      sequence:
+      - action: switch.turn_on
+        metadata: {}
+        target:
+          device_id: 7302731015943d61bd34c3b1cb0e163e
+        data: {}
+    - conditions:
+      - condition: trigger
+        id:
+        - 'Off'
+      sequence:
+      - action: switch.turn_off
+        metadata: {}
+        target:
+          device_id: 7302731015943d61bd34c3b1cb0e163e
+        data: {}
   mode: single
