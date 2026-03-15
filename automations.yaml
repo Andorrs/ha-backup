@@ -811,18 +811,10 @@
   alias: Stäng av elementet i bion automatiskt
   description: ''
   triggers:
-  - trigger: template
-    value_template: '{% set bio_temp = states(''sensor.sonoff_temp_bio_temperature'')
-      | float %}
-
-      {% set upper_limit = states(''input_number.bio_upper_temp'') | float %}
-
-      {% set spotpris = states(''sensor.nordpool_kwh_se4_sek_2_10_0'') | float %}
-
-      {% set spotpris_grans = states(''input_number.grans_elpris_automatisk_varme_bio'')
-      | float %}
-
-      {{ spotpris > spotpris_grans or bio-temp > upper_limit }}'
+  - trigger: numeric_state
+    entity_id:
+    - sensor.sonoff_temp_bio_temperature
+    above: input_number.bio_upper_temp
   conditions: []
   actions:
   - type: turn_off
