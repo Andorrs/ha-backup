@@ -402,3 +402,23 @@
       friendly_name: TRETAKT Smart plug 2 Switch
       state: 'off'
   metadata: {}
+- id: '1773770908607'
+  name: Lampor TV-rummet släckta
+  entities:
+    switch.shellyplug_s_083a8dc0c3e4:
+      friendly_name: TV-bänk
+      state: 'off'
+    switch.tv_bank_2:
+      friendly_name: TV-bänk 2
+      state: 'off'
+  metadata: {}
+- id: '1773770917676'
+  name: Lampor TV-rummet släckta
+  entities:
+    switch.shellyplug_s_083a8dc0c3e4:
+      friendly_name: TV-bänk
+      state: 'off'
+    switch.tv_bank_2:
+      friendly_name: TV-bänk 2
+      state: 'off'
+  metadata: {}

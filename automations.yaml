@@ -778,7 +778,7 @@
       {% set spotpris_grans = states(''input_number.grans_elpris_automatisk_varme_bio'')
       | float %}
 
-      {{ (spotpris <= spotpris_grans) and (bio_temp < lower_limit) }}'
+      {{ bio_temp < lower_limit }}'
     for:
       hours: 0
       minutes: 1
@@ -1818,4 +1818,30 @@
         target:
           device_id: 7302731015943d61bd34c3b1cb0e163e
         data: {}
+  mode: single
+- id: '1773771022825'
+  alias: Släck TV-rummet vardagar
+  description: '
+
+    '
+  triggers:
+  - at: '22:30:00'
+    trigger: time
+  conditions:
+  - condition: time
+    weekday:
+    - sun
+    - mon
+    - tue
+    - wed
+    - thu
+  - condition: state
+    entity_id: input_boolean.helgdag_nastkommande_dag
+    state: 'off'
+  actions:
+  - action: scene.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: scene.lampor_tv_rummet_slackta
   mode: single
