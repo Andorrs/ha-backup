@@ -1845,3 +1845,33 @@
     target:
       entity_id: scene.lampor_tv_rummet_slackta
   mode: single
+- id: '1775166032790'
+  alias: Persika-element on
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.outdoor_temperature
+    below: 1.9
+  conditions: []
+  actions:
+  - type: turn_on
+    device_id: d4fedbf04872ede373d250a4499f3143
+    entity_id: bb0b4b32456bb4b2dd5d8d746b1e66d3
+    domain: switch
+  mode: single
+- id: '1775166074902'
+  alias: Persika-element off
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.outdoor_temperature
+    above: 2
+  conditions: []
+  actions:
+  - type: turn_off
+    device_id: d4fedbf04872ede373d250a4499f3143
+    entity_id: bb0b4b32456bb4b2dd5d8d746b1e66d3
+    domain: switch
+  mode: single
