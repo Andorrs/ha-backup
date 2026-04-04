@@ -98,9 +98,9 @@
     - mon
   actions:
   - data: {}
-    target:
-      area_id: kitchen
     action: switch.turn_on
+    target:
+      entity_id: switch.koksfonster
   mode: single
 - id: '1675751680556'
   alias: Släck i köket på morgonen
