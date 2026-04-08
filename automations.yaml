@@ -1851,8 +1851,12 @@
   triggers:
   - trigger: numeric_state
     entity_id:
-    - sensor.outdoor_temperature
+    - sensor.sonoff_temp_bio_temperature
     below: 1.9
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 30
   conditions: []
   actions:
   - type: turn_on
@@ -1866,8 +1870,12 @@
   triggers:
   - trigger: numeric_state
     entity_id:
-    - sensor.outdoor_temperature
-    above: 2
+    - sensor.sonoff_temp_bio_temperature
+    above: 2.8
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 30
   conditions: []
   actions:
   - type: turn_off
