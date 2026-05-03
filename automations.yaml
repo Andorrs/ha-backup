@@ -26,7 +26,7 @@
       area_id:
       - isaks_rum
       - bedroom
-      - tv_rum
+      entity_id: switch.shellyplug_s_083a8dc0c3e4
     action: switch.turn_on
   - type: turn_on
     device_id: 4650455aa4639cc3788fe21f5d97cbf2
