@@ -768,8 +768,8 @@
   description: ''
   triggers:
   - trigger: template
-    value_template: '{% set bio_temp = states(''sensor.sonoff_temp_bio_temperature'')
-      | float %}
+    value_template: '{% set bio_temp = states(''sensor.bio_sensor_temperature'') |
+      float %}
 
       {% set lower_limit = states(''input_number.bio_lower_temp'') | float %}
 
@@ -813,7 +813,7 @@
   triggers:
   - trigger: numeric_state
     entity_id:
-    - sensor.sonoff_temp_bio_temperature
+    - sensor.bio_sensor_temperature
     above: input_number.bio_upper_temp
   conditions: []
   actions:
