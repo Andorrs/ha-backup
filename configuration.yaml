@@ -241,6 +241,14 @@ template:
           {% endif %}
   - sensor:
       - unit_of_measurement: "SEK"
+        name: Bio element power cost
+        icon: mdi:currency-eur
+        state: >
+          {% set power = states('sensor.varmeflakt_power') | float %}
+          {% set cost = states('sensor.totalt_elpris') | float %}
+          {{ power * cost / 1000 }}
+  - sensor:
+      - unit_of_measurement: "SEK"
         default_entity_id: sensor.ellie_power_cost_at_blavinge
         name: Ellie power cost at Blåvinge
         icon: mdi:currency-eur
