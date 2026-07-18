@@ -801,11 +801,11 @@
     from: 'off'
   conditions: []
   actions:
-  - action: notify.mobile_app_xq_de72
+  - action: notify.send_message
     metadata: {}
-    data:
-      title: Bil ansluten till laddaren
-      message: Ändra ansluten bil vid behov
+    target:
+      device_id: 8aa81c53030685ebaad0a6a34199f5c9
+    data: {}
   mode: single
 - id: '1728632695681'
   alias: Stäng av elementet i bion automatiskt
