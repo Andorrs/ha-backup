@@ -803,9 +803,9 @@
   actions:
   - action: notify.send_message
     metadata: {}
-    target:
-      device_id: 8aa81c53030685ebaad0a6a34199f5c9
     data: {}
+    target:
+      entity_id: notify.xperia_1_vii
   mode: single
 - id: '1728632695681'
   alias: Stäng av elementet i bion automatiskt
@@ -1488,11 +1488,13 @@
     metadata: {}
     data: {}
     response_variable: result
-  - action: notify.gmail_se3_max_price_notify
+  - action: smtp.send_message
     metadata: {}
+    target:
+      entity_id: notify.gmail_se3_max_price_notify_andorrs_pm_me
     data:
-      title: Morgondagens spotpris SE3
       message: Högsta pris {{ result.value }} kl {{ result.time }}
+      title: SE4 högsta pris i morgon
   mode: single
 - id: '1737846204407'
   alias: Tänd i garaget på morgonen

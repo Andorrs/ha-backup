@@ -351,23 +351,22 @@ logger:
 ####### To automate upload to Github ######
 shell_command:
   pushupdates_to_github: /bin/bash pushupdates.sh
+#http:
+#  use_x_forwarded_for: true
+#  trusted_proxies:
+#    - 172.30.33.0/24
+#    - 172.16.0.0/12
 
-http:
-  use_x_forwarded_for: true
-  trusted_proxies:
-    - 172.30.33.0/24
-    - 172.16.0.0/12
-
-notify:
-  - name: "Gmail_SE3_Max_Price_Notify"
-    platform: smtp
-    server: "smtp.gmail.com"
-    port: 587
-    timeout: 15
-    sender: "andorrs.ha@gmail.com"
-    encryption: starttls
-    username: "andorrs.ha@gmail.com"
-    password: !secret google_app_password
-    recipient:
-      - "andorrs@pm.me"
-    sender_name: "Anders Home Assistant"
+#notify:
+#  - name: "Gmail_SE3_Max_Price_Notify"
+#    platform: smtp
+#    server: "smtp.gmail.com"
+#    port: 587
+#    timeout: 15
+#    sender: "andorrs.ha@gmail.com"
+#    encryption: starttls
+#    username: "andorrs.ha@gmail.com"
+#    password: !secret google_app_password
+#    recipient:
+#      - "andorrs@pm.me"
+#    sender_name: "Anders Home Assistant"
