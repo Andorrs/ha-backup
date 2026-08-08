@@ -198,6 +198,24 @@ template:
           {{ power * cost / 1000 }}
   - sensor:
       - unit_of_measurement: "W"
+        default_entity_id: sensor.villa_blavinge_power
+        name: Villa Blåvinge power
+        device_class: "power"
+        state: >
+          {% set total_power = states('sensor.ell5_253941669_ell5_253941669_power_instant_active_positive') | float * 1000 %}
+          {% set wallconnector_power = states('sensor.wallconnector_power') | float %}
+          {{ total_power - wallconnector_power }}
+  - sensor:
+      - unit_of_measurement: "SEK"
+        default_entity_id: sensor.villa_blavinge_power_cost
+        name: Villa Blåvinge kostnad momentan
+        icon: "mdi:currency-eur"
+        state: >
+          {% set power = states('sensor.villa_blavinge_power') | float %}
+          {% set cost = states('sensor.totalt_elpris') | float %}
+          {{ power * cost / 1000 }}
+  - sensor:
+      - unit_of_measurement: "W"
         default_entity_id: sensor.ellie_power_at_blavinge
         name: Ellie power at Blåvinge
         device_class: "power"
