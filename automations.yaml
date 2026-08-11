@@ -763,33 +763,6 @@
     entity_id: 14cb9daa73e9532259b01afacf40da37
     domain: light
   mode: single
-- id: '1727985282363'
-  alias: Slå på elementet i bion under viss temperatur
-  description: ''
-  triggers:
-  - trigger: template
-    value_template: '{% set bio_temp = states(''sensor.bio_sensor_temperature'') |
-      float %}
-
-      {% set lower_limit = states(''input_number.bio_lower_temp'') | float %}
-
-      {% set spotpris = states(''sensor.nordpool_kwh_se4_sek_2_10_0'') | float %}
-
-      {% set spotpris_grans = states(''input_number.grans_elpris_automatisk_varme_bio'')
-      | float %}
-
-      {{ bio_temp < lower_limit }}'
-    for:
-      hours: 0
-      minutes: 1
-      seconds: 0
-  conditions: []
-  actions:
-  - type: turn_on
-    device_id: 580c9e6c7fe90033d523981df0f16349
-    entity_id: 9a1fa789a26a592ec4418c4069b4e527
-    domain: switch
-  mode: single
 - id: '1728375126132'
   alias: Avisering när bil ansluts till laddaren
   description: ''
@@ -803,7 +776,8 @@
   actions:
   - action: notify.send_message
     metadata: {}
-    data: {}
+    data:
+      message: Bil ansluten till laddaren
     target:
       entity_id: notify.xperia_1_vii
   mode: single
@@ -1891,10 +1865,10 @@
   triggers:
   - trigger: sun
     event: sunset
-    offset: -01:00
+    offset: -00:30
     id: 'On'
   - trigger: time
-    at: 01:00:00
+    at: 00:00:00
     id: 'Off'
   conditions: []
   actions:
@@ -1939,4 +1913,28 @@
       entity_id: notify.xperia_1_vii
     data:
       message: Alex o Elin på väg
+  mode: single
+- id: '1786347639773'
+  alias: Spara energi och kostnad statistik
+  description: ''
+  triggers:
+  - trigger: time
+    at: '23:59:50'
+  conditions: []
+  actions:
+  - action: notify.send_message
+    metadata: {}
+    data:
+      message: '{{ now().strftime(''%Y-%m-%d'') }},{{ states(''sensor.villa_blavinge_energi_dag'')
+        }},{{ states(''sensor.villa_blavinge_energi_manad'') }},{{ states(''sensor.villa_blavinge_energi_ar'')
+        }},{{ states(''sensor.villa_blavinge_kostnad_dag'') }},{{ states(''sensor.villa_blavinge_kostnad_manad'')
+        }},{{ states(''sensor.villa_blavinge_kostnad_ar'') }},{{ states(''sensor.ellie_energi_blavinge_dag'')
+        }},{{ states(''sensor.ellie_energi_blavinge_manad'') }},{{ states(''sensor.ellie_energi_blavinge_ar'')
+        }},{{ states(''sensor.ellie_kostnad_blavinge_dag'') }},{{ states(''sensor.ellie_kostnad_blavinge_manad'')
+        }},{{ states(''sensor.ellie_kostnad_blavinge_ar'') }},{{ states(''sensor.total_energi_dag'')
+        }},{{ states(''sensor.total_energi_manad'') }},{{ states(''sensor.total_energi_ar'')
+        }},{{ states(''sensor.total_kostnad_dag'') }},{{ states(''sensor.total_kostnad_manad'')
+        }},{{ states(''sensor.total_kostnad_ar'') }}'
+    target:
+      entity_id: notify.file_2
   mode: single

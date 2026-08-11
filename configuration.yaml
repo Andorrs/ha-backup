@@ -197,6 +197,15 @@ template:
           {% set cost = states('sensor.totalt_elpris') | float %}
           {{ power * cost / 1000 }}
   - sensor:
+      - unit_of_measurement: "SEK"
+        default_entity_id: sensor.total_power_cost
+        name: Total kostnad momentan
+        icon: "mdi:currency-eur"
+        state: >
+          {% set total_power = states('sensor.ell5_253941669_ell5_253941669_power_instant_active_positive') | float * 1000 %}
+          {% set cost = states('sensor.totalt_elpris') | float %}
+          {{ total_power * cost / 1000 }}
+  - sensor:
       - unit_of_measurement: "W"
         default_entity_id: sensor.villa_blavinge_power
         name: Villa Blåvinge power
@@ -226,11 +235,11 @@ template:
           {{ 0.0 }}
           {% endif %}
   #  - sensor:
-  #      - default_entity_id: ellie_power_at_herrgarden # NOT WORKING DUE TO NO TESLA INTEGRATION
-  #        name: Ellie power at Herrgården
+  #      - default_entity_id: ellie_power_at_bjorkudden # NOT WORKING DUE TO NO TESLA INTEGRATION
+  #        name: Ellie power at Björkudden
   #        unit_of_measurement: "W"
   #        state: >
-  #          {% if is_state('device_tracker.ellie_location_tracker', 'lilla_herrgarden') %}
+  #          {% if is_state('device_tracker.ellie_location_tracker', 'villa_bjorkudden') %}
   #          {{ states('sensor.ellie_charger_power') | float * 1000 }}
   #          {% else %}
   #          {{ 0.0 }}
@@ -262,7 +271,7 @@ template:
         name: Bio element power cost
         icon: mdi:currency-eur
         state: >
-          {% set power = states('sensor.varmeflakt_power') | float %}
+          {% set power = states('sensor.varmeflakt_power') | float(0.0) %}
           {% set cost = states('sensor.totalt_elpris') | float %}
           {{ power * cost / 1000 }}
   - sensor:
@@ -279,14 +288,14 @@ template:
           {{ 0.0 }}
           {% endif %}
   #  - sensor:
-  #      - default_entity_id: sensor.ellie_power_cost_at_herrgarden
-  #        name: Ellie power cost at Herrgården
+  #      - default_entity_id: sensor.ellie_power_cost_at_bjorkudden
+  #        name: Ellie power cost at Björkudden
   #        unit_of_measurement: "SEK"
   #        icon: "mdi:currency-eur"
   #        state: >
-  #          {% set power = states('sensor.ellie_power_at_herrgarden') | float %}
+  #          {% set power = states('sensor.ellie_power_at_bjorkudden') | float %}
   #          {% set cost = states('sensor.totalt_elpris_se3') | float %}
-  #          {% if is_state('device_tracker.ellie_location_tracker', 'lilla_herrgarden') %}
+  #          {% if is_state('device_tracker.ellie_location_tracker', 'villa_bjorkudden') %}
   #          {{ power * cost / 1000 }}
   #          {% else %}
   #          {{ 0.0 }}
@@ -339,27 +348,11 @@ template:
       - default_entity_id: sensor.day_of_the_week
         name: Day of the week
         state: "{{ now().weekday() + 1 }}"
-  - sensor:
-      - default_entity_id: sensor.bio_heating_on_off
-        state: >
-          {% set bio_temp = states('sensor.sonoff_temp_bio_temperature') | float %}
-          {% set lower_limit = states('input_number.bio_lower_temp') | float %}
-          {% set upper_limit = states('input_number.bio_upper_temp') | float %}
-          {% set spotpris = states('sensor.nordpool_kwh_se4_sek_2_10_0') | float %}
-          {% set spotpris_grans = states('input_number.grans_elpris_automatisk_varme_bio') | float %}
-          {% set switch_state = states('switch.varmeflakt') %}
-          {% set switch_on = switch_state == 'off' and bio_temp < lower_limit %}
-          {% set switch_off = switch_state == 'on' and bio_temp > upper_limit %}
-          {% if spotpris <= spotpris_grans and switch_on and not switch_off  %}
-            On
-          {% else %}
-            Off
-          {% endif %}
 
-logbook:
-  exclude:
-    entities:
-      - media_player.65oled707_12
+#logbook:
+#  exclude:
+#    entities:
+#      - media_player.65oled707_12
 
 logger:
   default: info
@@ -369,22 +362,3 @@ logger:
 ####### To automate upload to Github ######
 shell_command:
   pushupdates_to_github: /bin/bash pushupdates.sh
-#http:
-#  use_x_forwarded_for: true
-#  trusted_proxies:
-#    - 172.30.33.0/24
-#    - 172.16.0.0/12
-
-#notify:
-#  - name: "Gmail_SE3_Max_Price_Notify"
-#    platform: smtp
-#    server: "smtp.gmail.com"
-#    port: 587
-#    timeout: 15
-#    sender: "andorrs.ha@gmail.com"
-#    encryption: starttls
-#    username: "andorrs.ha@gmail.com"
-#    password: !secret google_app_password
-#    recipient:
-#      - "andorrs@pm.me"
-#    sender_name: "Anders Home Assistant"
