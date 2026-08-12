@@ -1925,16 +1925,16 @@
   - action: notify.send_message
     metadata: {}
     data:
-      message: '{{ now().strftime(''%Y-%m-%d'') }},{{ states(''sensor.villa_blavinge_energi_dag'')
-        }},{{ states(''sensor.villa_blavinge_energi_manad'') }},{{ states(''sensor.villa_blavinge_energi_ar'')
-        }},{{ states(''sensor.villa_blavinge_kostnad_dag'') }},{{ states(''sensor.villa_blavinge_kostnad_manad'')
-        }},{{ states(''sensor.villa_blavinge_kostnad_ar'') }},{{ states(''sensor.ellie_energi_blavinge_dag'')
-        }},{{ states(''sensor.ellie_energi_blavinge_manad'') }},{{ states(''sensor.ellie_energi_blavinge_ar'')
-        }},{{ states(''sensor.ellie_kostnad_blavinge_dag'') }},{{ states(''sensor.ellie_kostnad_blavinge_manad'')
-        }},{{ states(''sensor.ellie_kostnad_blavinge_ar'') }},{{ states(''sensor.total_energi_dag'')
-        }},{{ states(''sensor.total_energi_manad'') }},{{ states(''sensor.total_energi_ar'')
-        }},{{ states(''sensor.total_kostnad_dag'') }},{{ states(''sensor.total_kostnad_manad'')
-        }},{{ states(''sensor.total_kostnad_ar'') }}'
+      message: '{{ now().strftime(''%Y-%m-%d'') }};{{ states(''sensor.villa_blavinge_energi_dag'')
+        }};{{ states(''sensor.villa_blavinge_energi_manad'') }};{{ states(''sensor.villa_blavinge_energi_ar'')
+        }};{{ states(''sensor.villa_blavinge_kostnad_dag'') }};{{ states(''sensor.villa_blavinge_kostnad_manad'')
+        }};{{ states(''sensor.villa_blavinge_kostnad_ar'') }};{{ states(''sensor.ellie_energi_blavinge_dag'')
+        }};{{ states(''sensor.ellie_energi_blavinge_manad'') }};{{ states(''sensor.ellie_energi_blavinge_ar'')
+        }};{{ states(''sensor.ellie_kostnad_blavinge_dag'') }};{{ states(''sensor.ellie_kostnad_blavinge_manad'')
+        }};{{ states(''sensor.ellie_kostnad_blavinge_ar'') }};{{ states(''sensor.total_energi_dag'')
+        }};{{ states(''sensor.total_energi_manad'') }};{{ states(''sensor.total_energi_ar'')
+        }};{{ states(''sensor.total_kostnad_dag'') }};{{ states(''sensor.total_kostnad_manad'')
+        }};{{ states(''sensor.total_kostnad_ar'') }}'
     target:
       entity_id: notify.file_2
   mode: single
