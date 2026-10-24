@@ -154,28 +154,6 @@
     target:
       entity_id: switch.koksfonster
   mode: single
-- id: '1678197834461'
-  alias: Ellie lämnar Iconovo
-  description: ''
-  triggers:
-  - entity_id: device_tracker.ellie_location_tracker
-    zone: zone.iconovo
-    event: leave
-    trigger: zone
-  conditions: []
-  actions:
-  - action: script.send_notification_to_phone
-    metadata: {}
-    data:
-      message: Ellie lämnar Iconovo
-  - action: automation.turn_on
-    metadata: {}
-    data: {}
-    target:
-      entity_id:
-      - automation.set_charging_color_lamp
-      - automation.clear_charging_color_lamp
-  mode: single
 - id: '1679665932545'
   alias: ZHA - IKEA TRADFRI - 5 Button Remote - Custom Actions
   description: ''
@@ -780,21 +758,6 @@
       message: Bil ansluten till laddaren
     target:
       entity_id: notify.xperia_1_vii
-  mode: single
-- id: '1728632695681'
-  alias: Stäng av elementet i bion automatiskt
-  description: ''
-  triggers:
-  - trigger: numeric_state
-    entity_id:
-    - sensor.bio_sensor_temperature
-    above: input_number.bio_upper_temp
-  conditions: []
-  actions:
-  - type: turn_off
-    device_id: 580c9e6c7fe90033d523981df0f16349
-    entity_id: 9a1fa789a26a592ec4418c4069b4e527
-    domain: switch
   mode: single
 - id: '1728890667856'
   alias: Trigger calculation of days of year
