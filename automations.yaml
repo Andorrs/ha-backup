@@ -26,7 +26,9 @@
       area_id:
       - isaks_rum
       - bedroom
-      entity_id: switch.shellyplug_s_083a8dc0c3e4
+      entity_id:
+      - switch.shellyplug_s_083a8dc0c3e4
+      - switch.tv_bank_2
     action: switch.turn_on
   - type: turn_on
     device_id: 4650455aa4639cc3788fe21f5d97cbf2
@@ -1079,51 +1081,55 @@
   - trigger: state
     entity_id:
     - binary_sensor.ikea_parasoll_sensor_garagedorr_opening
-    from: 'on'
-    to: 'off'
+    from:
+    - 'on'
+    to:
+    - 'off'
     for:
       hours: 0
-      minutes: 1
+      minutes: 3
       seconds: 0
     id: Door
   - trigger: state
     entity_id:
     - binary_sensor.ikea_parasoll_sensor_garageport_opening
-    from: 'on'
-    to: 'off'
+    from:
+    - 'on'
+    to:
+    - 'off'
     for:
       hours: 0
-      minutes: 1
+      minutes: 3
       seconds: 0
     id: Door
   - trigger: state
     entity_id:
     - binary_sensor.motion_sensor_garage_occupancy
-    from: 'on'
-    to: 'off'
+    from:
+    - 'on'
+    to:
+    - 'off'
     id: Motion
     for:
       hours: 0
-      minutes: 1
+      minutes: 3
       seconds: 0
   - trigger: state
     entity_id:
     - binary_sensor.sonoff_motion_sensor_2_motion
-    from: 'on'
-    to: 'off'
+    from:
+    - 'on'
+    to:
+    - 'off'
     for:
       hours: 0
-      minutes: 1
+      minutes: 3
       seconds: 0
     id: Motion
   - trigger: time
     at: '19:01:00'
     id: Time
-  conditions:
-  - condition: time
-    before: 07:00:00
-    after: '19:00:00'
-    enabled: false
+  conditions: []
   actions:
   - choose:
     - conditions:
