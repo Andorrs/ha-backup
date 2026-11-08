@@ -108,12 +108,6 @@
   alias: Släck i köket på morgonen
   description: ''
   triggers:
-  - trigger: zone
-    entity_id: person.anders_hedberg
-    zone: zone.home
-    event: leave
-    id: Zone
-    enabled: false
   - trigger: time
     at: 08:00:00
     id: Time
@@ -125,31 +119,13 @@
       device_id: 3b8970ada7da46bde9a281dea5a4a56e
       entity_id: c11ad5f0072ba31c0b2be6f207331ddf
       domain: switch
-    - condition: or
-      conditions:
-      - condition: and
-        conditions:
-        - condition: trigger
-          id:
-          - Zone
-        - condition: time
-          before: 09:00:00
-          weekday:
-          - tue
-          - wed
-          - thu
-      - condition: and
-        conditions:
-        - condition: trigger
-          id:
-          - Time
-        - condition: time
-          weekday:
-          - mon
-          - tue
-          - wed
-          - thu
-          - fri
+    - condition: time
+      weekday:
+      - mon
+      - tue
+      - wed
+      - thu
+      - fri
   actions:
   - data: {}
     action: switch.turn_off
@@ -187,29 +163,24 @@
   alias: Släck ovanvåning vid frånvaro
   description: ''
   triggers:
-  - at: 00:20:00
+  - at: '23:20:00'
     trigger: time
   conditions:
   - condition: not
     conditions:
     - condition: zone
-      entity_id: device_tracker.ellie_location_tracker
+      entity_id: person.anders_hedberg
       zone: zone.home
   actions:
   - data: {}
     target:
       area_id:
-      - isaks_rum
       - bedroom
       - tv_rum
     action: switch.turn_off
   - type: turn_off
     device_id: 4650455aa4639cc3788fe21f5d97cbf2
     entity_id: 14cb9daa73e9532259b01afacf40da37
-    domain: light
-  - type: turn_off
-    device_id: 2413ba79f8dec68d81027a6863a84aa8
-    entity_id: 67d869d372bb2d555b04514dd3400139
     domain: light
   mode: single
 - id: '1680605346366'
@@ -1064,10 +1035,7 @@
     - binary_sensor.sonoff_motion_sensor_2_motion
     from: 'off'
     to: 'on'
-  conditions:
-  - condition: state
-    entity_id: light.ikea_tradfri_driver_10w_garage_light_2
-    state: 'off'
+  conditions: []
   actions:
   - type: turn_on
     device_id: 58845982e6a1dcdb8a3893ddf4f5dd78
@@ -1089,7 +1057,7 @@
       hours: 0
       minutes: 3
       seconds: 0
-    id: Door
+    id: generated-Jc58
   - trigger: state
     entity_id:
     - binary_sensor.ikea_parasoll_sensor_garageport_opening
@@ -1101,7 +1069,7 @@
       hours: 0
       minutes: 3
       seconds: 0
-    id: Door
+    id: generated-X6CJ
   - trigger: state
     entity_id:
     - binary_sensor.motion_sensor_garage_occupancy
@@ -1109,10 +1077,10 @@
     - 'on'
     to:
     - 'off'
-    id: Motion
+    id: generated-7Sz3
     for:
       hours: 0
-      minutes: 3
+      minutes: 5
       seconds: 0
   - trigger: state
     entity_id:
@@ -1123,27 +1091,24 @@
     - 'off'
     for:
       hours: 0
-      minutes: 3
+      minutes: 5
       seconds: 0
-    id: Motion
+    id: generated-27g4
   - trigger: time
     at: '19:01:00'
     id: Time
+    enabled: false
   conditions: []
   actions:
   - choose:
     - conditions:
       - condition: trigger
         id:
-        - Door
+        - generated-X6CJ
+        - generated-Jc58
       - condition: state
         entity_id: binary_sensor.motion_sensor_garage_occupancy
         state: 'off'
-      - type: is_no_motion
-        condition: device
-        device_id: 642352d3f752c87b02ef19ed5addc5c2
-        entity_id: 41252a39a13c8d367bb2c2d0f910a809
-        domain: binary_sensor
       sequence:
       - type: turn_off
         device_id: 58845982e6a1dcdb8a3893ddf4f5dd78
@@ -1152,13 +1117,10 @@
     - conditions:
       - condition: trigger
         id:
-        - Motion
-        - Time
+        - generated-7Sz3
+        - generated-27g4
       - condition: and
         conditions:
-        - condition: state
-          entity_id: binary_sensor.sonoff_motion_sensor_2_motion
-          state: 'off'
         - condition: state
           entity_id: binary_sensor.motion_sensor_garage_occupancy
           state: 'off'
@@ -1438,19 +1400,6 @@
     data:
       message: Högsta pris {{ result.value }} kl {{ result.time }}
       title: SE4 högsta pris i morgon
-  mode: single
-- id: '1737846204407'
-  alias: Tänd i garaget på morgonen
-  description: ''
-  triggers:
-  - trigger: time
-    at: 07:01:00
-  conditions: []
-  actions:
-  - type: turn_on
-    device_id: 58845982e6a1dcdb8a3893ddf4f5dd78
-    entity_id: 343dca463da084477b06468a2be7faad
-    domain: light
   mode: single
 - id: '1747513491787'
   alias: Toggle Isaks remote
